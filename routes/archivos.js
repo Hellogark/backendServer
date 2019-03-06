@@ -1,69 +1,71 @@
 var express = require('express');
 var app = express();
- var Usuario = require('../models/usuario');
- var mwAutenticacion = require('../middlewares/autenticacion');  
- var jwt = require('jsonwebtoken');
- var bcrypt = require('bcryptjs');
+var Archivos = require('../models/archivos');
+var mwAutenticacion = require('../middlewares/autenticacion'); 
 //===================================
-//obtener los usuarios
+//obtener los archivos
 //===================================
 app.get('/',( req, res, next ) => {
+    /*Campos a  devolver como segundo parámetro*/ 
     var desde = req.query.desde || 0;
     desde = Number(desde);
-    Usuario.find({}, 'nombre correo img role')
-    .skip(desde)
-    .limit(3)/*Campos a  devolver como segundo parámetro*/ 
+    Archivos.find({} ).populate('usuarios', 'nombre correo')
+    .populate('proyecto')
+    .skip(desde).limit(3)
         .exec(
         
         
-        (err,usuarios) =>{
+        (err,archivos) =>{
         if(err){
             return res.status(500).json({
                 ok:false,
-                mensaje: 'Error cargando usuarios',
+                mensaje: 'Error cargando archivos',
                 errors: err                
         }); }
-        Usuario.count({}, (err,conteo) =>{
+        Archivos.count({}, (err,conteo) =>{
 
         
             res.status(200).json({
                 ok:true,
                 total: conteo ,
-                usuarios   
+                archivos   
             });
          });
+
+       
+        
 
         });
 });
 
 
 //===================================
-// Crear los usuarios POST
+// Crear los archivos POST
 //===================================
-app.post('/', mwAutenticacion.verificaToken,(req, res) =>{
+app.post('/',mwAutenticacion.verificaToken,(req, res) =>{
     var body = req.body;
-    var usuario = new Usuario({
-        nombre: body.nombre,
-        correo: body.correo,
-        password: bcrypt.hashSync(body.password,10),
-        img: body.img,
-        role: body.role
-
-
+    console.log(body);
+    var archivo = new Archivos({
+        nombre: body.nombre,       
+        fechaCreacion: body.fechaCreacion,
+        fechaModificado: body.fechaModificado,
+        responsable: req.Usuario._id,
+        proyecto: body.proyecto /*EL. proyecto es el nombre del atributo proyecto de archivo module*/
+        
     });
 
-    usuario.save( (err, usuarioGuardado) =>{
+    archivo.save( (err, archivoGuardado) =>{
         if(err){
             return res.status(400).json({
                 ok:false,
-                mensaje: 'Error al crear usuario',
+                mensaje: 'Error al crear archivo',
                 errors: err                
         }); }
 
         res.status(201).json({
             ok:true,
-            usuario: usuarioGuardado,
-            usuariotoken: req.usuario
+            archivo: archivoGuardado
+           
     });
     res.status(200).json({
         ok:true,
@@ -74,45 +76,46 @@ app.post('/', mwAutenticacion.verificaToken,(req, res) =>{
 });
 
 //===================================
-//Actualizar los usuarios
+//Actualizar los archivos
 //===================================
-//:id especifica un segmento en la ruta /usuario/id
+//:id especifica un segmento en la ruta /archivo/id
 app.put('/:id',mwAutenticacion.verificaToken,(req,res) =>{
     var id = req.params.id;
     var body = req.body;
-    Usuario.findById(id, (err, usuario) =>{
+    Archivos.findById(id, (err, archivo) =>{
    
 
         if(err){
             return res.status(500).json({
                 ok:false,
-                mensaje: 'Error al buscar usuario',               
+                mensaje: 'Error al buscar archivo',               
                 errors: err                
         }); }
-        if(!usuario){
+        if(!archivo){
             return res.status(400).json({
                 ok:false,
-                mensaje: 'Error el usuario con el id '+id+' no existe',               
-                errors: {message: 'No existe un usuario con este ID '}  
+                mensaje: 'Error el archivo con el id '+id+' no existe',               
+                errors: {message: 'No existe un archivo con este ID '}  
 
                 }
             );
         }
-        usuario.nombre = body.nombre;
-        usuario.correo = body.correo;
-        usuario.role = body.role; 
-        usuario.save( (err,usuarioGuardado ) =>{
+        archivo.nombre = body.nombre;        
+        archivo.fechaModificado = body.fechaModificado; 
+        archivo.proyecto = body.proyecto;
+        archivo.responsable = req.Usuario._id;
+        archivo.save( (err,archivoGuardado ) =>{
                 
             if(err){
                 return res.status(400).json({
                     ok:false,
-                    mensaje: 'Error al actualizar usuario',               
+                    mensaje: 'Error al actualizar archivo',               
                     errors: err                
             }); }
-            usuarioGuardado.password = ':v';
+            
             res.status(200).json({
                 ok: true,
-                usuario: usuarioGuardado
+                archivo: archivoGuardado
             });
 
         });
@@ -122,30 +125,30 @@ app.put('/:id',mwAutenticacion.verificaToken,(req,res) =>{
 });
 
 //===================================
-//Eliminar ususarios por id
+//Eliminar archivos por id
 //===================================
 
 
 app.delete('/:id', mwAutenticacion.verificaToken,(req,res)=>{
         var id = req.params.id;
-        Usuario.findByIdAndRemove(id,(err, usuarioBorrado)=>{
+        Archivos.findByIdAndRemove(id,(err, archivoBorrado)=>{
      
             if(err){
                 return res.status(500).json({
                     ok:false,
-                    mensaje: 'Error al borrar usuario',               
+                    mensaje: 'Error al borrar el archivo',               
                     errors: err                
             }); }
            
-            if(!usuarioBorrado){
+            if(!archivoBorrado){
                 return res.status(400).json({
                     ok:false,
-                    mensaje: 'No existe un usuario con ese id',               
-                    errors: {message: 'No existe un usuario con ese id'}                
+                    mensaje: 'No existe un archivo con ese id',               
+                    errors: {message: 'No existe un archivo con ese id'}                
             }); }
             res.status(200).json({
                 ok: true,
-                usuario: usuarioBorrado
+                archivo:archivoBorrado
             });
         });
 });

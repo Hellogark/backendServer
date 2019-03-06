@@ -16,7 +16,7 @@ exports.verificaToken= function (req,res,next) {
         });
 
         }   //En cualquier lugar obtener la información del usuario que mandó la solicitud
-            req.usuario = decoded.usuario;
+            req.Usuario = decoded.usuario;
         next();
         //return res.status(200).json({
         //    ok:true,
