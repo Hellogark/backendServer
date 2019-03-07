@@ -5,12 +5,14 @@ var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
 var app = express();
-
+var cors = require('cors');
 var SEED = require('../config/config').SEED;
 
 var Usuario = require('../models/usuario.js');
 
-app.post('/', (req, res) =>{
+
+
+app.post('/' ,cors({origin:"http://localhost:4200"}),(req, res) =>{
     
     var body = req.body;
     Usuario.findOne({correo: body.correo}, (err,usuarioDB)=>{

@@ -15,6 +15,7 @@ var usuarioSchema = new Schema({
 	fechaCreacion:{type: String, required:true,default: fecha},		
 	img: {type: String, required: false } ,		
 	role: {type: String, required: true, default:'USER_ROLE',uppercase:true, enum: rolesUnicos} ,
+	activo:{type:Boolean,required:true,default:false},
 	proyectos: [{type: Schema.Types.ObjectId ,required:false,ref:'proyectos'}]
 },{collection:'usuarios'});
 usuarioSchema.plugin( uniqueValidator, {message: 'El {PATH} ya se encuentra registrado'} )

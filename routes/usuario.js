@@ -3,11 +3,14 @@ var app = express();
  var Usuario = require('../models/usuario');
  var mwAutenticacion = require('../middlewares/autenticacion');  
  var jwt = require('jsonwebtoken');
+ var cors = require('cors');
+
+
  var bcrypt = require('bcryptjs');
 //===================================
 //obtener los usuarios
 //===================================
-app.get('/',( req, res, next ) => {
+app.get('/',cors({origin:"http://localhost:4200"}),( req, res, next ) => {
     var desde = req.query.desde || 0;
     desde = Number(desde);
     Usuario.find({}, 'nombre correo img role')
@@ -40,7 +43,7 @@ app.get('/',( req, res, next ) => {
 //===================================
 // Crear los usuarios POST
 //===================================
-app.post('/', mwAutenticacion.verificaToken,(req, res) =>{
+app.post('/',cors({origin:"http://localhost:4200"}),(req, res) =>{
     var body = req.body;
     var usuario = new Usuario({
         nombre: body.nombre,
