@@ -39,6 +39,13 @@ app.post('/' ,cors({origin:"http://localhost:4200"}),(req, res) =>{
                 errors:err
             });
         }
+        if(usuarioDB.activo == false){
+            return res.status(400).json({
+                ok:false,
+                mensaje: 'El usuario no ha sido dado de alta',
+                errors:err
+            });
+        }
 
         //Crear token
         usuarioDB.password=':v'

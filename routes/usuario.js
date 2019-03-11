@@ -10,7 +10,7 @@ var app = express();
 //===================================
 //obtener los usuarios
 //===================================
-app.get('/',cors({origin:"http://localhost:4200"}),( req, res, next ) => {
+app.get('/',cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken,( req, res, next ) => {
     var desde = req.query.desde || 0;
     desde = Number(desde);
     Usuario.find({}, 'nombre correo img role')
@@ -50,7 +50,9 @@ app.post('/',cors({origin:"http://localhost:4200"}),(req, res) =>{
         correo: body.correo,
         password: bcrypt.hashSync(body.password,10),
         img: body.img,
-        role: body.role
+        role: body.role,
+        empresa: body.empresa,
+        activo: false
 
 
     });
@@ -67,11 +69,7 @@ app.post('/',cors({origin:"http://localhost:4200"}),(req, res) =>{
             ok:true,
             usuario: usuarioGuardado,
             usuariotoken: req.usuario
-    });
-    res.status(200).json({
-        ok:true,
-        body   
-    });
+    });    
 
     });
 });
@@ -80,11 +78,10 @@ app.post('/',cors({origin:"http://localhost:4200"}),(req, res) =>{
 //Actualizar los usuarios
 //===================================
 //:id especifica un segmento en la ruta /usuario/id
-app.put('/:id',mwAutenticacion.verificaToken,(req,res) =>{
+app.put('/:id',mwAutenticacion.verificaToken,cors({origin:"http://localhost:4200"}),(req,res) =>{
     var id = req.params.id;
     var body = req.body;
     Usuario.findById(id, (err, usuario) =>{
-   
 
         if(err){
             return res.status(500).json({
@@ -101,9 +98,23 @@ app.put('/:id',mwAutenticacion.verificaToken,(req,res) =>{
                 }
             );
         }
+         
+       
         usuario.nombre = body.nombre;
-        usuario.correo = body.correo;
-        usuario.role = body.role; 
+        usuario.correo = body.correo;    
+        usuario.empresa=usuario.empresa;
+        if( body.passwordAnterior){ 
+               
+         if( !bcrypt.compareSync( body.passwordAnterior, usuario.password) ){
+             
+                return res.status(400).json({
+                    ok:false,
+                    mensaje: 'Contraseña incorrecta',
+                    errors:err
+                });
+            } 
+        usuario.password = bcrypt.hashSync(body.password,10);
+        }   
         usuario.save( (err,usuarioGuardado ) =>{
                 
             if(err){
@@ -129,7 +140,7 @@ app.put('/:id',mwAutenticacion.verificaToken,(req,res) =>{
 //===================================
 
 
-app.delete('/:id', mwAutenticacion.verificaToken,(req,res)=>{
+app.delete('/:id', cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken,(req,res)=>{
         var id = req.params.id;
         Usuario.findByIdAndRemove(id,(err, usuarioBorrado)=>{
      

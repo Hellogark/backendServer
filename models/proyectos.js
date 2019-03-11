@@ -8,11 +8,11 @@ var proyectosSchema = new Schema({
     descripcion: {type: String, required:true},
     fechaCreacion:{type: String, required:false,default: fecha},
     fechaProyectada:{type: String, required:false},
-    nombreEmpresa:{type: String, required:false},
+    nombreEmpresa:{type: String, required:true},
     responsable: {type: Schema.Types.ObjectId,required:false,ref:'usuarios'},
-    ultimoEditor:{type: Schema.Types.ObjectId,required:true,ref:'usuarios'},
+    ultimoEditor:{type: Schema.Types.ObjectId,required:false,ref:'usuarios'},
     participantes:[{type: Schema.Types.ObjectId ,required:false,ref:'usuarios'}],
-    archivos:[ {type: Schema.Types.ObjectId,required:true, ref:'archivos'}]
+    archivos:[ {type: Schema.Types.ObjectId,required:false, ref:'archivos'}]
 
 },{collection:'proyectos'});
 

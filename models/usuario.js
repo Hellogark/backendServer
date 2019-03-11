@@ -10,12 +10,13 @@ var rolesUnicos = {
 };
 var usuarioSchema = new Schema({
     nombre: {type: String, required: [true, "El nombre es necesario"] } ,
-    correo: {type: String, unique:true, required: [true, "El correo es necesario"] } ,
+    correo: {type: String, unique:true, required: [true, "El correo es necesario"],lowercase:true } ,
 	password: {type: String,  required: [true, "La contraseña es necesaria"] } ,
 	fechaCreacion:{type: String, required:true,default: fecha},		
-	img: {type: String, required: false } ,		
-	role: {type: String, required: true, default:'USER_ROLE',uppercase:true, enum: rolesUnicos} ,
+	img: {type: String, required: false, default:'' } ,		
+	role: {type: String, required: false, default:'USER_ROLE',uppercase:true, enum: rolesUnicos} ,
 	activo:{type:Boolean,required:true,default:false},
+	empresa:{type: String, required:false},
 	proyectos: [{type: Schema.Types.ObjectId ,required:false,ref:'proyectos'}]
 },{collection:'usuarios'});
 usuarioSchema.plugin( uniqueValidator, {message: 'El {PATH} ya se encuentra registrado'} )
