@@ -197,7 +197,7 @@ function subirPorTipo(tipo, id, nombreArchivo, res, req) {
 
                 })) {
 
-                if (pathViejo != `./uploads/usuarios/${id}/${proyecto.archivos.nombre}`) {
+                if (pathViejo != `./uploads/proyectos/${id}/${proyecto.archivos.nombre}`) {
                     fs.unlinkSync(pathViejo);
                 }
             } else {
@@ -207,7 +207,7 @@ function subirPorTipo(tipo, id, nombreArchivo, res, req) {
                      {"$set":{"archivos.$.nombre":nombreArchivo}}                    
                     );  */
                 proyecto.ultimoEditor = req.Usuario._id;
-                var archivo = new Archivos({
+                let archivo = new Archivos({
                     nombre: nombreArchivo,
                     fechaCreacion: fecha,
                     fechaModificado: fecha,
@@ -222,7 +222,7 @@ function subirPorTipo(tipo, id, nombreArchivo, res, req) {
                             errors: err
                         });
                     }
-                                     
+                    proyecto.archivos.push(resp._id);               
                     proyecto.save(req, (err, archivoActualizado) => {
                         if (err) {
                             return res.status(400).json({
@@ -233,7 +233,7 @@ function subirPorTipo(tipo, id, nombreArchivo, res, req) {
                         }
                      
                      
-                       proyecto.archivos.push(resp._id);  
+                      
                         return res.status(200).json({
                             ok: true,
                             mensaje: 'archivo subido con éxito',

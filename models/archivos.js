@@ -9,6 +9,6 @@ var archivosSchema = new Schema({
     fechaCreacion: {type:String, required:true,default:fecha},
     fechaModificado: {type:String, required:false, default: fecha},
     responsable: {type: Schema.Types.ObjectId,required:true, ref:'usuarios'},
-    proyecto: {type: Schema.Types.ObjectId,required:true, ref:'proyectos'}
+    proyecto: {type: Schema.Types.ObjectId,required:false, ref:'proyectos'}
 },{collection:'archivos'});
 module.exports = mongoose.model('archivos',archivosSchema);

@@ -88,7 +88,7 @@ app.get('/todo/:busqueda',(req,res,next) =>{
         return new Promise((resolve, reject) =>{
             
             
-             Usuario.find({},'nombre correo role').populate('proyectos').or([{'nombre': regex},{'correo': regex}]).exec((err,usuarios)=>{
+             Usuario.find({},'nombre correo role empresa activo img').populate('proyectos').or([{'nombre': regex},{'correo': regex}]).exec((err,usuarios)=>{
                     if(err){
                         reject('Error al cargar hospitales', err);
                     }else{

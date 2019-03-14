@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var Proyecto = require('../models/proyectos');
+var Archivos = require('../models/archivos');
 var mwAutenticacion = require('../middlewares/autenticacion'); 
 //===================================
 //obtener los proyectos
@@ -88,7 +89,7 @@ app.put('/:id',mwAutenticacion.verificaToken,(req,res) =>{
 //===================================
 // Crear los proyectos POST
 //===================================
-app.post('/',mwAutenticacion.verificaToken,(req, res) =>{
+app.post('/:id',mwAutenticacion.verificaToken,(req, res) =>{
     var body = req.body;
     var proyecto = new Proyecto({
         nombre: body.nombre,
@@ -98,7 +99,8 @@ app.post('/',mwAutenticacion.verificaToken,(req, res) =>{
         nombreEmpresa: body.nombreEmpresa,
         responsable: req.Usuario._id,
         ultimoEditor: req.Usuario._id,
-        participantes: req.Usuario._id
+        participantes: body.participantes,
+        archivos: body.archivos
     });
 
     proyecto.save( (err, proyectoGuardado) =>{

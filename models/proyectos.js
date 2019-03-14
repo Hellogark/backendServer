@@ -12,7 +12,7 @@ var proyectosSchema = new Schema({
     responsable: {type: Schema.Types.ObjectId,required:false,ref:'usuarios'},
     ultimoEditor:{type: Schema.Types.ObjectId,required:false,ref:'usuarios'},
     participantes:[{type: Schema.Types.ObjectId ,required:false,ref:'usuarios'}],
-    archivos:[ {type: Schema.Types.ObjectId,required:false, ref:'archivos'}]
+    archivos: [{type: Schema.Types.ObjectId,required:false, ref:'archivos'}]
 
 },{collection:'proyectos'});
 

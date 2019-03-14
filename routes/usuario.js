@@ -13,9 +13,10 @@ var app = express();
 app.get('/',cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken,( req, res, next ) => {
     var desde = req.query.desde || 0;
     desde = Number(desde);
-    Usuario.find({}, 'nombre correo img role')
+    Usuario.find({}, 'nombre correo img role empresa activo')
     .skip(desde)
-    .limit(3)/*Campos a  devolver como segundo parámetro*/ 
+    
+    /*Campos a  devolver como segundo parámetro*/ 
         .exec(
         
         
@@ -26,7 +27,7 @@ app.get('/',cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken
                 mensaje: 'Error cargando usuarios',
                 errors: err                
         }); }
-        Usuario.count({}, (err,conteo) =>{
+        Usuario.countDocuments({}, (err,conteo) =>{
 
         
             res.status(200).json({
@@ -115,6 +116,53 @@ app.put('/:id',mwAutenticacion.verificaToken,cors({origin:"http://localhost:4200
             } 
         usuario.password = bcrypt.hashSync(body.password,10);
         }   
+        usuario.save( (err,usuarioGuardado ) =>{
+                
+            if(err){
+                return res.status(400).json({
+                    ok:false,
+                    mensaje: 'Error al actualizar usuario',               
+                    errors: err                
+            }); }
+            usuarioGuardado.password = ':v';
+            res.status(200).json({
+                ok: true,
+                usuario: usuarioGuardado
+            });
+
+        });
+    });
+
+
+});
+//===================================
+//editar ususarios por id
+//===================================
+app.put('/editarUsuario/:id',mwAutenticacion.verificaToken,cors({origin:"http://localhost:4200"}),(req,res) =>{
+    var id = req.params.id;
+    var body = req.body;
+    Usuario.findById(id, (err, usuario) =>{
+
+        if(err){
+            return res.status(500).json({
+                ok:false,
+                mensaje: 'Error al buscar usuario',               
+                errors: err                
+        }); }
+        if(!usuario){
+            return res.status(400).json({
+                ok:false,
+                mensaje: 'Error el usuario con el id '+id+' no existe',               
+                errors: {message: 'No existe un usuario con este ID '}  
+
+                }
+            );
+        }
+         
+       
+        usuario.activo = body.activo;
+        usuario.role = body.role;            
+           
         usuario.save( (err,usuarioGuardado ) =>{
                 
             if(err){
