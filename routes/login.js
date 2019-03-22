@@ -28,14 +28,14 @@ app.post('/' ,cors({origin:"http://localhost:4200"}),(req, res) =>{
         if(!usuarioDB){
             return res.status(400).json({
                 ok:false,
-                mensaje: 'Credenciales incorrectas-email',
+                mensaje: 'Credenciales incorrectas',
                 errors:err
             });
         }
         if( !bcrypt.compareSync(body.password, usuarioDB.password) ){
             return res.status(400).json({
                 ok:false,
-                mensaje: 'Credenciales incorrectas-password',
+                mensaje: 'Credenciales incorrectas',
                 errors:err
             });
         }
@@ -56,11 +56,42 @@ app.post('/' ,cors({origin:"http://localhost:4200"}),(req, res) =>{
             mensaje: 'Login correcto',
             usuario: usuarioDB,
             token: token,
-            id: usuarioDB._id                
+            id: usuarioDB._id,      
+            menu: obtenerMenu(usuarioDB.role)          
             });
     });
    
 });
 
+    function obtenerMenu( ROLE){
+        menu = [
+            {
+              titulo: 'Principal',
+              icono: 'mdi mdi-gauge',
+              submenu: [
+                { titulo: 'Dashboard', url: '/dashboard' },
+                { titulo : 'Proyectos en los que participo', url: '/misproyectos' },                                                       
+              ]
+            },
+          ];
+
+          if(ROLE === 'ADMIN_ROLE'){
+            menu.push({
+                titulo: 'Acciones Admin...',      
+                icono: 'mdi mdi-folder-lock-open',
+                submenu:[
+                  {titulo: 'Ver usuarios', url:'/ver-usuarios'},
+                  {titulo: 'Ver todos los proyectos',url:'/ver-proyectos'},
+                  { titulo: 'Crear Proyecto', url: '/nuevoProyecto' }
+          
+          
+                ]
+          
+          
+              });
+
+          }
+          return menu;
+    }
 
 module.exports = app;

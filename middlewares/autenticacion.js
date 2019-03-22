@@ -25,3 +25,37 @@ exports.verificaToken= function (req,res,next) {
     });
 
     };
+
+    //VerificaAdmin
+    exports.verificaRol= function (req,res,next) {
+
+        var usuario = req.usuario;
+        if(usuario.role === 'ADMIN_ROLE'){
+        next();
+        return;
+        }else{
+            return res.status(401).json({
+                ok:false,
+                mensaje: 'Usuario no permitido',
+                errors: {message: 'Usuario no permitido'}                
+        });
+        }
+       };
+
+        //VerificaAdmin o mismo usuarios
+    exports.verificaAdmin_Usuario= function (req,res,next) {
+
+        var usuario = req.usuario;
+        var id = req.params.id
+        if(usuario.role === 'ADMIN_ROLE' || usuario._id === id ){
+        next();
+        return;
+        }else{
+            return res.status(401).json({
+                ok:false,
+                mensaje: 'Usuario no permitido',
+                errors: {message: 'Usuario no permitido'}                
+        });
+        }
+       
+    };

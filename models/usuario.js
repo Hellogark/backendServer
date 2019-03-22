@@ -16,7 +16,7 @@ var usuarioSchema = new Schema({
 	img: {type: String, required: false, default:'' } ,		
 	role: {type: String, required: false, default:'USER_ROLE',uppercase:true, enum: rolesUnicos} ,
 	activo:{type:Boolean,required:true,default:false},
-	empresa:{type: String, required:false},
+	empresa:{type: String, required:false},	
 	proyectos: [{type: Schema.Types.ObjectId ,required:false,ref:'proyectos'}]
 },{collection:'usuarios'});
 usuarioSchema.plugin( uniqueValidator, {message: 'El {PATH} ya se encuentra registrado'} )

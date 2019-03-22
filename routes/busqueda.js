@@ -1,11 +1,12 @@
 var express = require('express');
 var app = express();
+var mwAutenticacion = require('../middlewares/autenticacion'); 
 var Proyecto = require('../models/proyectos');
 var Usuario = require('../models/usuario');
 //============================
 //Busqueda Específica
 //============================
-app.get('/info/:tabla/:busqueda', (req,res) =>{
+app.get('/info/:tabla/:busqueda',mwAutenticacion.verificaRol, (req,res) =>{
 
     var busqueda = req.params.busqueda;
     var regex = new RegExp(busqueda,'i');
@@ -39,10 +40,13 @@ app.get('/info/:tabla/:busqueda', (req,res) =>{
 //============================
 //Busqueda General
 //============================
-app.get('/todo/:busqueda',(req,res,next) =>{ 
+app.get('/todo/:busqueda',mwAutenticacion.verificaRol,(req,res,next) =>{ 
     //params busqueda es lo del url /todo el param es /todo/param
     var busqueda = req.params.busqueda;
     var regex = new RegExp(busqueda,'i');
+    if(busqueda == '' || busqueda == null){
+        return false;
+    }
 
 
     Promise.all( [
@@ -88,7 +92,7 @@ app.get('/todo/:busqueda',(req,res,next) =>{
         return new Promise((resolve, reject) =>{
             
             
-             Usuario.find({},'nombre correo role empresa activo img').populate('proyectos').or([{'nombre': regex},{'correo': regex}]).exec((err,usuarios)=>{
+             Usuario.find({},'nombre correo role empresa activo img ').populate('proyectos').or([{'nombre': regex}]).exec((err,usuarios)=>{
                     if(err){
                         reject('Error al cargar hospitales', err);
                     }else{
