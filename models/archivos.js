@@ -4,11 +4,12 @@ var moment = require('moment');
 const fecha = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
 
 
-var archivosSchema = new Schema({
-    nombre: {type:String, required:true},
-    fechaCreacion: {type:String, required:true,default:fecha},
-    fechaModificado: {type:String, required:false, default: fecha},
-    responsable: {type: Schema.Types.ObjectId,required:true, ref:'usuarios'},
-    proyecto: {type: Schema.Types.ObjectId,required:false, ref:'proyectos'}
+var archivosSchema = new Schema({   
+        nombre: {type:String, required:true, unique:true},
+        fechaCreacion: {type:String, required:true,default:fecha},
+        fechaModificado: {type:String, required:false, default: fecha},
+        comentario: {type: String, required: true},
+        responsable: {type: Schema.Types.ObjectId,required:true, ref:'usuarios'},     
 },{collection:'archivos'});
+archivosSchema.index({'nombre': 1});
 module.exports = mongoose.model('archivos',archivosSchema);

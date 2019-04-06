@@ -15,5 +15,6 @@ var proyectosSchema = new Schema({
     archivos: [{type: Schema.Types.ObjectId,required:false, ref:'archivos'}]
 
 },{collection:'proyectos'});
-
+proyectosSchema.index({'participantes':1});
+proyectosSchema.index({'archivos':1});
 module.exports = mongoose.model('proyectos',proyectosSchema);

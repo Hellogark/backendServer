@@ -3,9 +3,8 @@
 //===================================
 var SEED = require('../config/config').SEED;
 var jwt = require('jsonwebtoken');
+var user;
 exports.verificaToken= function (req,res,next) {
-
-
     var token = req.query.token;
     jwt.verify(token,SEED,(err,decoded)=>{
         if(err){
@@ -14,14 +13,10 @@ exports.verificaToken= function (req,res,next) {
                 mensaje: 'Token inválido',
                 errors: err                
         });
-
-        }   //En cualquier lugar obtener la información del usuario que mandó la solicitud
-            req.Usuario = decoded.usuario;
+        }  
+        req.Usuario = decoded.usuario;           //En cualquier lugar obtener la información del usuario que mandó la solicitud
         next();
-        //return res.status(200).json({
-        //    ok:true,
-        //    mensaje: 'Token válido',
-        //    decoded:decoded 
+                           
     });
 
     };
@@ -29,7 +24,9 @@ exports.verificaToken= function (req,res,next) {
     //VerificaAdmin
     exports.verificaRol= function (req,res,next) {
 
-        var usuario = req.usuario;
+        var usuario = req.Usuario;
+        console.log(usuario);
+       
         if(usuario.role === 'ADMIN_ROLE'){
         next();
         return;
@@ -45,8 +42,9 @@ exports.verificaToken= function (req,res,next) {
         //VerificaAdmin o mismo usuarios
     exports.verificaAdmin_Usuario= function (req,res,next) {
 
-        var usuario = req.usuario;
-        var id = req.params.id
+        var usuario = req.Usuario;
+        var id = req.params.id;
+        console.log(usuario);
         if(usuario.role === 'ADMIN_ROLE' || usuario._id === id ){
         next();
         return;

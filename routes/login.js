@@ -9,6 +9,22 @@ var cors = require('cors');
 var SEED = require('../config/config').SEED;
 
 var Usuario = require('../models/usuario.js');
+var mwAutenticacion = require('../middlewares/autenticacion');
+
+//=================================
+//Renovar Token
+//=================================
+
+app.get('/renuevatoken',cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken, (req , res) =>{
+    var token = jwt.sign({usuario: req.usuario}, SEED,{expiresIn:'1h'});
+
+    res.status(200).json({
+        ok:true,    
+        token:token
+
+    });
+
+} );
 
 
 

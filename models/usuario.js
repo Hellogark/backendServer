@@ -17,8 +17,9 @@ var usuarioSchema = new Schema({
 	role: {type: String, required: false, default:'USER_ROLE',uppercase:true, enum: rolesUnicos} ,
 	activo:{type:Boolean,required:true,default:false},
 	empresa:{type: String, required:false},	
-	proyectos: [{type: Schema.Types.ObjectId ,required:false,ref:'proyectos'}]
+
 },{collection:'usuarios'});
+
 usuarioSchema.plugin( uniqueValidator, {message: 'El {PATH} ya se encuentra registrado'} )
 //Exportar modelo La primer letra en mayúscula del nombre del modelo, en la bd debe de estar en minúscula
 module.exports = mongoose.model('usuarios', usuarioSchema);

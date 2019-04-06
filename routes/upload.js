@@ -31,17 +31,7 @@ app.put('/:tipo/:id/', mwAutenticacion.verificaToken, (req, res) => {
         });
 
     }
-    if (tipo === 'proyectos' && !req.files) {
-        return res.status(400).json({
-
-            ok: false,
-            mensaje: 'No se cargaron archivos',
-            errors: {
-                message: 'Debe seleccionar un archvio por lo menos'
-            }
-        });
-    }
-
+   
     //Obtener nombre del archivo
     var archivo;
     if (tipo === 'usuarios') {
@@ -50,6 +40,9 @@ app.put('/:tipo/:id/', mwAutenticacion.verificaToken, (req, res) => {
     }
 
     if (tipo === 'proyectos') {
+        if(req.files.archivos == undefined){
+            return;
+        }
         archivo = req.files.archivos;
     }
     var nombreArchivo = archivo.name.split('.');
@@ -57,7 +50,7 @@ app.put('/:tipo/:id/', mwAutenticacion.verificaToken, (req, res) => {
     //Extensiones aceptadas
 
     var extensionesUsuario = ['png', 'jpg', 'jpeg', 'gif'];
-    var extensionesProyecto = ['png', 'jpg', 'jpeg', 'gif', 'doc', 'docx', 'pptx', 'ppt', 'pdf', 'mp4', 'avi', 'wmv', 'rar'];
+    var extensionesProyecto = ['rar', 'zip'];
 
     //buscar dentro del arreglo     
 
@@ -154,17 +147,9 @@ function subirPorTipo(tipo, id, nombreArchivo, res, req) {
                         usuario: usuarioActualizado
                     });
                 }
-
-
-
-
-
             });
 
         });
-
-
-
     }
     if (tipo === 'proyectos') {
         var archivo = {
@@ -207,12 +192,13 @@ function subirPorTipo(tipo, id, nombreArchivo, res, req) {
                      {"$set":{"archivos.$.nombre":nombreArchivo}}                    
                     );  */
                 proyecto.ultimoEditor = req.Usuario._id;
-                let archivo = new Archivos({
+               
+                var archivo = new Archivos({
                     nombre: nombreArchivo,
                     fechaCreacion: fecha,
                     fechaModificado: fecha,
                     responsable: req.Usuario._id,
-                    proyecto: id
+                    comentario: req.body.comentario
                 });
                 archivo.save((err, resp) => {
                     if (err) {

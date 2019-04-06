@@ -54,7 +54,7 @@ app.use('/archivos',archivosRoutes);
 app.use('/login',loginRoutes);
 app.use('/busqueda',busquedaRoutes);
 app.use('/upload',uploadRoutes);
-app.use('/img',obtenerArchivosRoutes);
+app.use('/descarga',obtenerArchivosRoutes);
 app.use('/',appRoutes);
 
 

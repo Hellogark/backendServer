@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
  var Usuario = require('../models/usuario');
+ var Proyecto = require('../models/proyectos');
  var mwAutenticacion = require('../middlewares/autenticacion');  
  var jwt = require('jsonwebtoken');
  var cors = require('cors');
@@ -10,7 +11,7 @@ var app = express();
 //===================================
 //obtener los usuarios
 //===================================
-app.get('/',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken,mwAutenticacion.verificaRol],( req, res, next ) => {
+app.get('/',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],( req, res, next ) => {
     var desde = req.query.desde || 0;
     desde = Number(desde);
     Usuario.find({}, 'nombre correo img role empresa activo')
@@ -141,6 +142,7 @@ app.put('/:id',mwAutenticacion.verificaToken,cors({origin:"http://localhost:4200
 app.put('/editarUsuario/:id',[mwAutenticacion.verificaToken,mwAutenticacion.verificaAdmin_Usuario],cors({origin:"http://localhost:4200"}),(req,res) =>{
     var id = req.params.id;
     var body = req.body;
+    
     Usuario.findById(id, (err, usuario) =>{
 
         if(err){
@@ -211,4 +213,5 @@ app.delete('/:id', cors({origin:"http://localhost:4200"}),mwAutenticacion.verifi
             });
         });
 });
+
 module.exports = app;

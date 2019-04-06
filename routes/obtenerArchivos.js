@@ -9,13 +9,30 @@ app.get('/:tipo/:id/:img',( req, res, next ) => {
     var tipo = req.params.tipo;
     var img = req.params.img;
     var id = req.params.id;
-    var pathImagen = path.resolve(__dirname,`../uploads/${tipo}/${id}/${img}`);
-    if(fs.existsSync(pathImagen)){
-        res.sendFile(pathImagen);       
-    }else{
-        var pathNoImage = path.resolve(__dirname,'../assets/no-img.jpg');
-        res.sendFile(pathNoImage);
+    var pathArchivo = path.resolve(__dirname,`../uploads/${tipo}/${id}/${img}`);
+
+    switch (tipo) {
+        case 'usuarios':
+        if(fs.existsSync(pathArchivo)){
+            res.sendFile(pathArchivo);       
+        }else{
+            var pathNoImage = path.resolve(__dirname,'../assets/no-img.jpg');
+            res.sendFile(pathNoImage);
+        }
+            break;
+        case 'proyectos':
+        if(fs.existsSync(pathArchivo)){
+            res.download(pathArchivo);       
+        }else{
+
+        }
+
+        break;
+    
+        default:
+            break;
     }
+    
    
 
 });
