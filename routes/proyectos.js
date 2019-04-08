@@ -333,7 +333,7 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
             if (err) {
                 res.status(err.status).end();
               }
-        });
+        }).resume();
         
 
     });
