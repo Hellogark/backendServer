@@ -6,7 +6,7 @@ var Usuario = require('../models/usuario');
 //============================
 //Busqueda Específica
 //============================
-app.get('/info/:tabla/:busqueda',mwAutenticacion.verificaRol, (req,res) =>{
+app.get('/info/:tabla/:busqueda',mwAutenticacion.verificaToken, (req,res) =>{
 
     var busqueda = req.params.busqueda;
     var regex = new RegExp(busqueda,'i');
@@ -40,7 +40,7 @@ app.get('/info/:tabla/:busqueda',mwAutenticacion.verificaRol, (req,res) =>{
 //============================
 //Busqueda General
 //============================
-app.get('/todo/:busqueda',mwAutenticacion.verificaRol,(req,res,next) =>{ 
+app.get('/todo/:busqueda',mwAutenticacion.verificaToken,(req,res,next) =>{ 
     //params busqueda es lo del url /todo el param es /todo/param
     var busqueda = req.params.busqueda;
     var regex = new RegExp(busqueda,'i');

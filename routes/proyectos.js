@@ -322,7 +322,9 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
 });
  
 
-   
+   ////////////////////////////////////
+   //Descargar archvio
+   ///////////////////////////////////
 
     app.get('/:id/descargar/:nombre',cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken,(req,res)=>{
         var params = req.params;    
@@ -337,6 +339,7 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
         
 
     });
+    
 
 //////////////////////////////////
 //Eliminar Archivos

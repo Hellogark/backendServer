@@ -35,9 +35,9 @@ var uploadRoutes = require('./routes/upload');
 var obtenerArchivosRoutes = require('./routes/obtenerArchivos');
 
 //conexion a la bd
-mongoose.connect('mongodb://localhost:27017/DinamycsProyectos',{useNewUrlParser: true}, (err, res) => {
+mongoose.connect('mongodb+srv://eduardoAtDinamycs:3v98ZOf7Xijl8bS1@clusterproyectos-da6ml.mongodb.net/DinamycsProyectos?retryWrites=true',{useNewUrlParser: true}, (err, res) => {
     if(err) throw err;
-    console.log('Base de datos onlinen:\x1b[5m%s\x1b[0m',' online');
+    console.log('Base de datos online:\x1b[5m%s\x1b[0m',' online');
 
 
 });
