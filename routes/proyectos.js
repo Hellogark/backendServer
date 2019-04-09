@@ -331,11 +331,27 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
         var id = params.id;
         var nombre = params.nombre;
         var pathArchivo = path.resolve(__dirname,`../uploads/proyectos/${id}/${nombre}`);
+        if(!fs.existsSync(pathArchivo)){
+             return res.status(400).json({
+                    ok:false,
+                    errors:{
+                        message:'No existe el archivo'
+                    }
+                });
+
+        }
         res.sendFile(pathArchivo,'Recursos del proyecto', (err) =>{
             if (err) {
-                res.status(err.status).end();
-              }
-        }).resume();
+                return res.status(400).json({
+                    ok:false,
+                    errors:{
+                        message:'No existe el archivo',
+                        err:err
+                    }
+                });
+              }          
+              
+        })
         
 
     });
