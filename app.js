@@ -33,6 +33,7 @@ var archivosRoutes = require('./routes/archivos');
 var busquedaRoutes = require('./routes/busqueda');
 var uploadRoutes = require('./routes/upload');
 var obtenerArchivosRoutes = require('./routes/obtenerArchivos');
+var tareasRoutes = require('./routes/tareas');
 
 //conexion a la bd
 mongoose.connect('mongodb+srv://eduardoAtDinamycs:3v98ZOf7Xijl8bS1@clusterproyectos-da6ml.mongodb.net/DinamycsProyectos?retryWrites=true',{useNewUrlParser: true}, (err, res) => {
@@ -55,6 +56,7 @@ app.use('/login',loginRoutes);
 app.use('/busqueda',busquedaRoutes);
 app.use('/upload',uploadRoutes);
 app.use('/descarga',obtenerArchivosRoutes);
+app.use('/tareas',tareasRoutes);
 app.use('/',appRoutes);
 
 
