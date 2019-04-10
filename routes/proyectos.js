@@ -473,7 +473,7 @@ app.delete('/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verifi
 //Operaciones de tareas
 ////////////////////////////
 
-app.post('id:/tareas',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
+app.post('/id:/tareas',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
     var body = req.body;
     var idProyecto = req.params.id;
     var arregloPart = [];

@@ -74,6 +74,7 @@ app.get('/todo/:busqueda',mwAutenticacion.verificaToken,(req,res,next) =>{
 
              Proyecto.find({ nombre: regex })
                 .populate('responsable', 'nombre correo role fechaCreacion')
+                .populate('ultimoEditor', 'nombre')
                 .exec(      
               (err,proyectos) =>{
                 if(err){
