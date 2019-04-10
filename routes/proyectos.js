@@ -10,6 +10,7 @@ var md5 = require('md5');
 var Proyecto = require('../models/proyectos');
 var Usuario = require('../models/usuario');
 var Archivo = require('../models/archivos');
+var Tarea = require('../models/tareas');
 var cors = require('cors');
 const path = require('path');
 var mwAutenticacion = require('../middlewares/autenticacion'); 
@@ -465,5 +466,52 @@ app.delete('/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verifi
                 proyecto: proyectoBorrado
             });
         });
+});
+
+
+////////////////////////////
+//Operaciones de tareas
+////////////////////////////
+
+app.post('id:/tareas',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
+    var body = req.body;
+    var idProyecto = req.params.id;
+    var arregloPart = [];
+    var arregloTareas = [];
+    var arregloGuardarTareas = [];
+
+    body.tareas.forEach( element =>{
+        arregloTareas.push(element);
+    });
+    body.participantes.forEach(element => {
+                arregloPart.push(element._id);
+        });
+
+        arregloTareas.forEach( tareas =>{
+            var generaTarea = new Tarea({
+                nombre: tareas.nombre,
+                descripcion: tareas.descripcion,
+                fechaFinalizado: tareas.fechaFinalziado,
+                finalizado: tareas.finalizado,
+                creador: tareas.creador,
+                ultimoEditor:tareas.ultimoEditor,
+                participantes: arregloPart
+            });
+           generaTarea.save( (err,res) =>{
+            if(err){
+                return res.status(400).json({
+                    ok:false,
+                    mensaje: 'Error al crear el o las tareas',
+                    errors: err                
+            }); }
+    
+            res.status(201).json({
+                ok:true,
+                tareas: res,            
+        });
+           });
+        });
+   
+
 });
 module.exports = app;

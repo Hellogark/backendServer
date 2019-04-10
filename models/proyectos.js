@@ -12,9 +12,11 @@ var proyectosSchema = new Schema({
     responsable: {type: Schema.Types.ObjectId,required:false,ref:'usuarios'},
     ultimoEditor:{type: Schema.Types.ObjectId,required:false,ref:'usuarios'},
     participantes:[{type: Schema.Types.ObjectId ,required:false,ref:'usuarios'}],
-    archivos: [{type: Schema.Types.ObjectId,required:false, ref:'archivos'}]
+    archivos: [{type: Schema.Types.ObjectId,required:false, ref:'archivos'}],
+    tareas: [{type: Schema.Types.ObjectId, required: false, ref: 'tareas'}]
 
 },{collection:'proyectos'});
 proyectosSchema.index({'participantes':1});
 proyectosSchema.index({'archivos':1});
+proyectosSchema.index({'tareas':1});
 module.exports = mongoose.model('proyectos',proyectosSchema);

@@ -8,10 +8,10 @@ var tareasSchema = new Schema({
     descripcion: {type: String, required:true},
     fechaCreacion:{type: String, required:false,default: fecha},
     fechaFinalizado:{type: String, required:false},
-    creador:{type: String, required:true},
+    finalizado:{type: Boolean, default:false},
+    creador: {type: Schema.Types.ObjectId,required:false,ref:'usuarios'},
     ultimoEditor:{type: Schema.Types.ObjectId,required:false,ref:'usuarios'},
-    participantes:[{type: Schema.Types.ObjectId ,required:false,ref:'usuarios'}],
-    archivos: [{type: Schema.Types.ObjectId,required:false, ref:'archivos'}]
+    participantes:[{type: Schema.Types.ObjectId ,required:false,ref:'usuarios'}]
 
 },{collection:'tareas'});
 tareasSchema.index({'participantes':1});
