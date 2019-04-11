@@ -86,7 +86,8 @@ app.post('/' ,cors({origin:"http://localhost:4200"}),(req, res) =>{
               icono: 'mdi mdi-gauge',
               submenu: [
                 { titulo: 'Dashboard', url: '/dashboard' },
-                { titulo : 'Proyectos en los que participo', url: '/misproyectos' },                                                       
+                { titulo : 'Proyectos en los que participo', url: '/misproyectos' },   
+                { titulo: 'Mis tareas', url: '/mistareas' }                                                    
               ]
             },
           ];

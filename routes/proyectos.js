@@ -478,7 +478,6 @@ app.post('/id:/tareas',cors({origin:"http://localhost:4200"}),[mwAutenticacion.v
     var idProyecto = req.params.id;
     var arregloPart = [];
     var arregloTareas = [];
-    var arregloGuardarTareas = [];
 
     body.tareas.forEach( element =>{
         arregloTareas.push(element);
@@ -503,13 +502,12 @@ app.post('/id:/tareas',cors({origin:"http://localhost:4200"}),[mwAutenticacion.v
                     ok:false,
                     mensaje: 'Error al crear el o las tareas',
                     errors: err                
-            }); }
-    
-            res.status(201).json({
+            }); }               
+           });
+        });
+         res.status(201).json({
                 ok:true,
                 tareas: res,            
-        });
-           });
         });
    
 
