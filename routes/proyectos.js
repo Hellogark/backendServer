@@ -28,7 +28,8 @@ app.get('/',cors({origin:"http://localhost:4200"}),
     desde = Number(desde);
     Proyecto.find({})
     .populate('archivos','nombre _id')
-    .populate('participantes','nombre img')    
+    .populate('participantes','nombre img')  
+    .sort({nombre: 1})  
     .exec(
         (err,proyectos) =>{
         if(err){
@@ -104,6 +105,7 @@ var id = req.params.id;
     .populate('archivos','nombre _id comentario responsable' )
     .populate('participantes','nombre img')
     .populate('responsable', 'nombre')
+    .sort({nombre: 1})
     .exec( (err,proyectos) =>{
        
         if(err){
@@ -184,8 +186,9 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
 
 
 });
-
+//////////////////
 //Subir archivo
+//////////////////
     app.put('/:id/archivos',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res) =>{
         var idProyecto = req.params.id;
    
@@ -444,7 +447,7 @@ app.post('/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verifica
 //===================================
 
 
-app.delete('/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res)=>{
+app.delete('/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
         var id = req.params.id;
         Proyecto.findByIdAndRemove(id,(err, proyectoBorrado)=>{
      
@@ -469,24 +472,26 @@ app.delete('/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verifi
 });
 
 
-////////////////////////////
-//Operaciones de tareas
-////////////////////////////
+//////////////////////////////
+//Operaciones de tareas     //
+/////////////////////////////
 
-app.post('/id:/tareas',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
+
+////////////////////////
+//Crear Tarea
+///////////////////////
+app.post('/id:/tareas/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
     var body = req.body;
     var idProyecto = req.params.id;
     var arregloPart = [];
-    var arregloTareas = [];
 
-    body.tareas.forEach( element =>{
-        arregloTareas.push(element);
-    });
+   if(body.participantes){
     body.participantes.forEach(element => {
-                arregloPart.push(element._id);
-        });
+            arregloPart.push(element._id);
+        }); 
 
-        arregloTareas.forEach( tareas =>{
+   }
+        
             var generaTarea = new Tarea({
                 nombre: tareas.nombre,
                 descripcion: tareas.descripcion,
@@ -502,14 +507,135 @@ app.post('/id:/tareas',cors({origin:"http://localhost:4200"}),[mwAutenticacion.v
                     ok:false,
                     mensaje: 'Error al crear el o las tareas',
                     errors: err                
-            }); }               
-           });
-        });
-         res.status(201).json({
+            }); }
+            res.status(201).json({
                 ok:true,
                 tareas: res,            
+        });               
+    });
+});
+    ////////////////////////
+    //Obtener mis tareas
+    /////////////////////////
+    app.get('/mistareas/:id', cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken, (req,res) =>{
+
+        var id = req.params.id;
+        Tarea.find({participantes:id})
+            .populate('proyecto','nombre _id' )
+            .populate('creador', 'nombre')
+            .sort({fechaCreacion: 1})
+            .exec( (err,tareas) =>{
+
+                 if(err){
+                     return res.status(500).json({
+                         ok:false,
+                         mensaje: 'Error cargando tareas',
+                         errors: err                
+                 }); }
+
+                 Tarea.countDocuments({}, (err,conteo) =>{
+                     res.status(200).json({
+                         ok:true,
+                         total: conteo ,
+                         tareas   
+                     });
+                });
+          
+         });
+    });     
+
+////////////////////////////////////////
+//Obtener Todas las tareas del proyecto
+///////////////////////////////////////
+app.get('/id:/tareas',cors({origin:"http://localhost:4200"}),
+[mwAutenticacion.verificaToken],
+( req, res, next ) => {
+    /*Campos a  devolver como segundo parámetro*/ 
+    var idProyecto = req.params.id;
+    Proyecto.find({_id:idProyecto})
+    .select('tareas')      
+    .exec(
+        (err,proyectos) =>{
+        if(err){
+            return res.status(500).json({
+                ok:false,
+                mensaje: 'Error cargando proyectos',
+                errors: err                
+        }); }
+        
+        Proyecto.countDocuments({}, (err,conteo) =>{
+
+        
+            res.status(200).json({
+                ok:true,
+                total: conteo ,
+                proyectos   
+            });
+         });
+
         });
+});
+/////////////////////////////
+//Editar Tarea
+/////////////////////////////
+app.put('/:idProyecto/tareas/:idTarea',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res) =>{
+    var body = req.body;
+    var idProyecto = req.params.idProyecto;
+    var idTarea = req.params.idTarea;
+
+
+
+
+});
+
+
+
+/////////////////////////////
+//Eliminar Tarea
+/////////////////////////////
+
+app.delete('/:idProyecto/eliminarTarea/:idTarea', cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
+    var idProyecto = req.params.idProyecto;
+    var idTarea = req.params.idTarea;
+    Proyecto.findOneAndUpdate({_id:idProyecto}, {$pull: {tareas:idTarea}}, (err,tarea)=>{
+        if(err){
+            return res.status(500).json({
+                ok:false,
+                mensaje: 'Error al borrar la tarea',               
+                errors: err                
+        }); }
+       
+        if(!tarea){
+            return res.status(400).json({
+                ok:false,
+                mensaje: 'No existe un tarea con ese id en el proyecto',               
+                errors: {message: 'No existe un tarea con ese id'}                
+        }); }
+        Tarea.findByIdAndRemove(idTarea,(err, tareaBorrada)=>{
+            if(err){
+                return res.status(500).json({
+                    ok:false,
+                    mensaje: 'Error al borrar tarea',               
+                    errors: err                
+            }); }
+           
+            if(!tareaBorrada){
+                return res.status(400).json({
+                    ok:false,
+                    mensaje: 'No existe un tarea con ese id',               
+                    errors: {message: 'No existe un tarea con ese id'}                
+            }); }
+            res.status(200).json({
+                ok: true,
+                proyecto: tareaBorrada
+            });
+        });
+
+        
+    });
+ 
    
 
 });
+
 module.exports = app;

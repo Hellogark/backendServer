@@ -15,6 +15,7 @@ app.get('/',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToke
     var desde = req.query.desde || 0;
     desde = Number(desde);
     Usuario.find({}, 'nombre correo img role empresa activo')
+    .sort({nombre: 1})
     .skip(desde)
     
     /*Campos a  devolver como segundo parámetro*/ 
