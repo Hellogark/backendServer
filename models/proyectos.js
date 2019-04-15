@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var moment = require('moment');	
-const fecha = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
+const fecha = moment().locale('es').format("LLL");
 
 var proyectosSchema = new Schema({
     nombre:{type: String, required:true,unique:true},

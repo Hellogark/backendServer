@@ -140,9 +140,10 @@ app.put('/:id',mwAutenticacion.verificaToken,cors({origin:"http://localhost:4200
 //===================================
 //editar ususarios por id
 //===================================
-app.put('/editarUsuario/:id',[mwAutenticacion.verificaToken,mwAutenticacion.verificaAdmin_Usuario],cors({origin:"http://localhost:4200"}),(req,res) =>{
+app.put('/editarUsuario/:id',[mwAutenticacion.verificaToken],cors({origin:"http://localhost:4200"}),(req,res) =>{
     var id = req.params.id;
     var body = req.body;
+ 
     
     Usuario.findById(id, (err, usuario) =>{
 

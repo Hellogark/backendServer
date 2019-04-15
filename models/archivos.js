@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var moment = require('moment');	
-const fecha = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
+const fecha = new Date().toLocaleDateString('es-ES');
+
 
 
 var archivosSchema = new Schema({   

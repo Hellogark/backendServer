@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 var uniqueValidator = require('mongoose-unique-validator');
 var moment = require('moment');
 	
-const fecha = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");// datejs.Date.i18n.setLanguage(['es-MX']);
+const fecha = moment().locale('es').format("LLL");// datejs.Date.i18n.setLanguage(['es-MX']);
 var rolesUnicos = {
 	values: ['ADMIN_ROLE','USER_ROLE'],
 	message: '{VALUE} no es un rol permitido'
