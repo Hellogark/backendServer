@@ -547,11 +547,12 @@ app.post('/id:/tareas/crear',cors({origin:"http://localhost:4200"}),[mwAutentica
 ////////////////////////////////////////
 //Obtener Todas las tareas del proyecto
 ///////////////////////////////////////
-app.get('/id:/tareas',cors({origin:"http://localhost:4200"}),
+app.get('/:id/tareas',cors({origin:"http://localhost:4200"}),
 [mwAutenticacion.verificaToken],
 ( req, res, next ) => {
     /*Campos a  devolver como segundo parámetro*/ 
     var idProyecto = req.params.id;
+  
     Proyecto.find({_id:idProyecto})
     .select('tareas')      
     .exec(
