@@ -32,6 +32,7 @@ var proyectosRoutes = require('./routes/proyectos');
 var archivosRoutes = require('./routes/archivos');
 var busquedaRoutes = require('./routes/busqueda');
 var uploadRoutes = require('./routes/upload');
+var tareasRoutes= require('./routes/tareas');
 var obtenerArchivosRoutes = require('./routes/obtenerArchivos');
 
 //conexion a la bd
@@ -55,6 +56,7 @@ app.use('/login',loginRoutes);
 app.use('/busqueda',busquedaRoutes);
 app.use('/upload',uploadRoutes);
 app.use('/descarga',obtenerArchivosRoutes);
+app.use('/tareas',tareasRoutes);
 app.use('/',appRoutes);
 
 
