@@ -19,24 +19,35 @@ var mwAutenticacion = require('../middlewares/autenticacion');
 ////////////////////////
 //Crear Tarea
 ///////////////////////
-app.post('/id:/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
+app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
     var body = req.body;
     var idProyecto = req.params.id;
-  
+   
+    console.log(idProyecto);
             var generaTarea = new Tarea({
-              proyecto: idProyecto
+            nombre:body.nombreTarea,
+            descripcion: body.descTarea,
+            fechaCreacion: body.fechaCreacion,
+            finalizado: body.finalizado,
+            creador: body.creador,
+            ultimoEditor: body.ultimoEditor,
+            participante: body.participante,
+            proyecto: idProyecto
             });
-           generaTarea.save( (err,res) =>{
+            console.log(generaTarea);
+           generaTarea.save( (err,tareaCreada) =>{
+
             if(err){
                 return res.status(400).json({
                     ok:false,
                     mensaje: 'Error al crear el o las tareas',
                     errors: err                
             }); }
-            res.status(201).json({
+             Proyecto.findOneAndUpdate({_id:idProyecto},{$push:{tareas:tareaCreada._id}},{new:true});        
+            return res.status(201).json({
                 ok:true,
-                tareas: res,            
-        });               
+                tareas: tareaCreada,            
+            });      
     });
 });
 

@@ -12,7 +12,7 @@ var tareasSchema = new Schema({
     creador: {type: Schema.Types.ObjectId,required:false,ref:'usuarios'},
     ultimoEditor:{type: Schema.Types.ObjectId,required:false,ref:'usuarios'},
     participante:{type: Schema.Types.ObjectId ,required:false,ref:'usuarios'},
-    proyecto: {type:Schema.Types.ObjectId, required:true, ref:'proyectos'}
+    proyecto: {type: Schema.Types.ObjectId, required:true, ref:'proyectos'}
 
 },{collection:'tareas'});
 tareasSchema.index({'participante':1});
