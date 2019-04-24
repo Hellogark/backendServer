@@ -58,7 +58,19 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
         var idProyecto = req.params.idP;
         var idTarea = req.params.idT;
         var body = req.body;
-        Tarea.findOneAndUpdate({_id:idTarea})
+        
+
+    });
+
+    ////////////////////////
+    //Actualizar checked
+    ///////////////////////
+    app.put('/tareaTerminada/:idT', cors({origin: "http://localhost:4200"}),mwAutenticacion.verificaToken,( req, res)=>{
+        var body = req.body;
+        var idTarea = req.params.idT;
+        Tarea.findOneAndUpdate({_id: idTarea},{$set: {finalizado:body.finalizado, fechaFinalizado:body.fechaFinalizado, ultimoEditor:body.ultimoEditor}}, (err, respTarea) =>{
+
+        });
 
     });
 
@@ -102,7 +114,9 @@ app.get('/:id/tareas',cors({origin:"http://localhost:4200"}),
     var idProyecto = req.params.id;
   
     Proyecto.find({_id:idProyecto})
-    .select('tareas')      
+    .select('tareas') 
+    .populate('tareas') 
+    .populate({path: 'tareas', populate: {path: 'creador'}})    
     .exec(
         (err,proyectos) =>{
         if(err){
@@ -111,16 +125,11 @@ app.get('/:id/tareas',cors({origin:"http://localhost:4200"}),
                 mensaje: 'Error cargando proyectos',
                 errors: err                
         }); }
-        
-        Proyecto.countDocuments({}, (err,conteo) =>{
-
-        
+                        
             res.status(200).json({
-                ok:true,
-                total: conteo ,
+                ok:true,          
                 proyectos   
-            });
-         });
+            });    
 
         });
 });
