@@ -5,7 +5,8 @@ var Usuario = require('../models/usuario');
 var Tarea = require('../models/tareas');
 var cors = require('cors');
 var mwAutenticacion = require('../middlewares/autenticacion'); 
-
+var moment = require('moment');	
+const fecha = moment().locale('es').format("LLL");
 
 
 
@@ -27,8 +28,8 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
             var generaTarea = new Tarea({
             nombre:body.nombreTarea,
             descripcion: body.descTarea,
-            fechaCreacion: body.fechaCreacion,
-            finalizado: body.finalizado,
+            fechaCreacion: fecha,
+            fechaFinalizado: body.fechaFinalizado,
             creador: body.creador,
             ultimoEditor: body.ultimoEditor,
             participante: body.participante,
@@ -44,6 +45,12 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
                     errors: err                
             }); }
              Proyecto.findOneAndUpdate({_id:idProyecto},{$push:{tareas:tareaCreada._id}},{new:true});        
+             if(err){
+                return res.status(400).json({
+                    ok:false,
+                    mensaje: 'Error al vincular la tarea con el proyecto',
+                    errors: err                
+            }); }
             return res.status(201).json({
                 ok:true,
                 tareas: tareaCreada,            
@@ -69,7 +76,7 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
         var body = req.body;
         var idTarea = req.params.idT;
         Tarea.findOneAndUpdate({_id: idTarea},{$set: {finalizado:body.finalizado, fechaFinalizado:body.fechaFinalizado, ultimoEditor:body.ultimoEditor}}, (err, respTarea) =>{
-
+            return respTarea;
         });
 
     });
