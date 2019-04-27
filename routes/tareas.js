@@ -23,8 +23,11 @@ const fecha = moment().locale('es').format("LLL");
 app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
     var body = req.body;
     var idProyecto = req.params.id;
-   
-    console.log(idProyecto);
+    var participanteId;
+    body.participante.forEach(element => {
+         participanteId=element._id;
+    });
+ 
             var generaTarea = new Tarea({
             nombre:body.nombreTarea,
             descripcion: body.descTarea,
@@ -32,10 +35,9 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
             fechaFinalizado: body.fechaFinalizado,
             creador: body.creador,
             ultimoEditor: body.ultimoEditor,
-            participante: body.participante,
+            participante: participanteId,
             proyecto: idProyecto
             });
-            console.log(generaTarea);
            generaTarea.save( (err,tareaCreada) =>{
 
             if(err){
@@ -44,7 +46,8 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
                     mensaje: 'Error al crear el o las tareas',
                     errors: err                
             }); }
-             Proyecto.findOneAndUpdate({_id:idProyecto},{$push:{tareas:tareaCreada._id}},{new:true});        
+             Proyecto.findOneAndUpdate({_id:idProyecto},{$push:{tareas:tareaCreada._id}},{new:true}, (err,resp)=>{
+
              if(err){
                 return res.status(400).json({
                     ok:false,
@@ -55,6 +58,8 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
                 ok:true,
                 tareas: tareaCreada,            
             });      
+
+             });        
     });
 });
 
@@ -65,6 +70,13 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
         var idProyecto = req.params.idP;
         var idTarea = req.params.idT;
         var body = req.body;
+        return res.status(200).json({
+            body:body
+        })
+        Tarea.findByIdAndUpdate(idTarea,{$set: {
+
+
+        }})
         
 
     });
@@ -90,6 +102,7 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
         Tarea.find({participantes:id})
             .populate('proyecto','nombre _id' )
             .populate('creador', 'nombre')
+            .populate('participante', 'nombre')
             .sort({fechaCreacion: 1})
             .exec( (err,tareas) =>{
 
@@ -123,6 +136,7 @@ app.get('/:id/tareas',cors({origin:"http://localhost:4200"}),
     Proyecto.find({_id:idProyecto})
     .select('tareas') 
     .populate('tareas') 
+    .populate({path: 'tareas' ,populate: {path:'participante'}})
     .populate({path: 'tareas', populate: {path: 'creador'}})    
     .exec(
         (err,proyectos) =>{
