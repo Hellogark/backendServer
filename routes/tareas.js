@@ -32,7 +32,7 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
             nombre:body.nombreTarea,
             descripcion: body.descTarea,
             fechaCreacion: fecha,
-            fechaFinalizado: body.fechaFinalizado,
+            fechaLimite: body.fechaLimite,
             creador: body.creador,
             ultimoEditor: body.ultimoEditor,
             participante: participanteId,
@@ -86,8 +86,10 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
     ///////////////////////
     app.put('/tareaTerminada/:idT', cors({origin: "http://localhost:4200"}),mwAutenticacion.verificaToken,( req, res)=>{
         var body = req.body;
+        console.log(body);
         var idTarea = req.params.idT;
         Tarea.findOneAndUpdate({_id: idTarea},{$set: {finalizado:body.finalizado, fechaFinalizado:body.fechaFinalizado, ultimoEditor:body.ultimoEditor}}, (err, respTarea) =>{
+            console.log(respTarea);
             return respTarea;
         });
 

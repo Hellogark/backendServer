@@ -8,6 +8,7 @@ var tareasSchema = new Schema({
     descripcion: {type: String, required:false,default:'',sparse:true},
     fechaCreacion:{type: String, required:false,default: fecha,sparse:true},
     fechaFinalizado:{type: String, required:false,sparse:true},
+    fechaLimite: {type: String, required:false},
     finalizado:{type: Boolean, default:false,sparse:true}, 
     creador: {type: Schema.Types.ObjectId,required:false,ref:'usuarios',sparse:true},
     ultimoEditor:{type: Schema.Types.ObjectId,required:false,ref:'usuarios',sparse:true},
