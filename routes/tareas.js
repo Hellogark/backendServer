@@ -89,7 +89,7 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
         //console.log(body);
         var idTarea = req.params.idT;
         Tarea.findOneAndUpdate({_id: idTarea},{$set: {finalizado:body.finalizado, fechaFinalizado:body.fechaFinalizado, ultimoEditor:body.ultimoEditor}},{new:true}, (err, respTarea) =>{
-            
+            console.log(respTarea)
             return  res.status(200).json({
                 ok:true,
                 tarea:respTarea   
@@ -163,11 +163,19 @@ app.get('/:id/tareas',cors({origin:"http://localhost:4200"}),
 /////////////////////////////
 //Obtener Una Tarea
 /////////////////////////////
-app.get('/:id/tareaEditar',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],( req, res ) =>{
+app.get('/tareaEditar/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],( req, res ) =>{
     var idTarea = req.params.id;
 
-    Tareas.findById(idTarea)
-
+    Tarea.findById(idTarea)
+    .populate('proyecto','nombre _id' )
+    .populate('creador', 'nombre')
+    .populate('participante', 'nombre')
+    .exec( (err, tarea) =>{
+        res.status(201).json({
+            ok:true,
+            tarea:tarea
+        })
+    });
 } );
 /////////////////////////////
 //Editar Tarea
