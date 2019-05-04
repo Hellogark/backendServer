@@ -17,6 +17,7 @@ var usuarioSchema = new Schema({
 	role: {type: String, required: false, default:'USER_ROLE',uppercase:true, enum: rolesUnicos} ,
 	activo:{type:Boolean,required:true,default:false},
 	empresa:{type: String, required:false},	
+	
 
 },{collection:'usuarios'});
 

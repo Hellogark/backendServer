@@ -63,23 +63,7 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
     });
 });
 
-    ////////////////////////
-    //Actualizar Tarea
-    ///////////////////////
-    app.put('/:idP/actualizar/:idT', cors({origin: "http://localhost:4200"}),mwAutenticacion.verificaToken,( req, res)=>{
-        var idProyecto = req.params.idP;
-        var idTarea = req.params.idT;
-        var body = req.body;
-        return res.status(200).json({
-            body:body
-        })
-        Tarea.findByIdAndUpdate(idTarea,{$set: {
 
-
-        }})
-        
-
-    });
 
     ////////////////////////
     //Actualizar checked
@@ -97,6 +81,65 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
         });
 
     });
+
+    /////////////////////////////
+    //Actualizar Tarea
+    /////////////////////////////
+    app.put('/:idProyecto/actualizar/:idTarea',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res) =>{
+        var body = req.body;
+        var idProyecto = req.params.idProyecto;
+        var idTarea = req.params.idTarea;
+        var idParticipante;
+        body.participante.forEach(part => {
+            idParticipante = part._id;
+            console.log(part);
+        });
+        console.log(idParticipante);
+ 
+        Tarea.findById(idTarea, (err,tarea)=>{
+    
+            if(err){
+                return res.status(500).json({
+                    ok:false,
+                    mensaje: 'Error al buscar la tarea a editar',               
+                    errors: err                
+            }); }
+            if(!tarea){
+                return res.status(400).json({
+                    ok:false,
+                    mensaje: 'La tarea con el id '+idTarea+' no existe',               
+                    errors: {message: 'No existe una tarea con este ID '}  
+    
+                    }
+                );
+            }
+            tarea.nombre = body.nombre;
+            tarea.fechaLimite = body.fechaLimite;
+            tarea.descripcion = body. descTarea;
+            tarea.ultimoEditor = body.ultimoEditor;
+            tarea.participante = idParticipante;
+            tarea.proyecto = idProyecto;
+            tarea.save( (err,tareaGuardada) =>{
+                if(err){
+                    return res.status(400).json({
+                        ok:false,
+                        mensaje: 'Error al actualizar la tarea',               
+                        errors: err                
+                }); }
+                res.status(200).json({
+                    ok:true,                  
+                    tareaG: tareaGuardada  
+                });
+                
+                
+            })
+        });
+    
+    
+    
+    
+    });
+
 
     ////////////////////////
     //Obtener mis tareas
@@ -129,7 +172,7 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
          });
     });     
 
-////////////////////////////////////////
+    ////////////////////////////////////////
 //Obtener Todas las tareas del proyecto
 ///////////////////////////////////////
 app.get('/:id/tareas',cors({origin:"http://localhost:4200"}),
@@ -169,7 +212,7 @@ app.get('/tareaEditar/:id',cors({origin:"http://localhost:4200"}),[mwAutenticaci
     Tarea.findById(idTarea)
     .populate('proyecto','nombre _id' )
     .populate('creador', 'nombre')
-    .populate('participante', 'nombre')
+    .populate('participante', 'nombre _id')
     .exec( (err, tarea) =>{
         res.status(201).json({
             ok:true,
@@ -177,18 +220,6 @@ app.get('/tareaEditar/:id',cors({origin:"http://localhost:4200"}),[mwAutenticaci
         })
     });
 } );
-/////////////////////////////
-//Editar Tarea
-/////////////////////////////
-app.put('/:idProyecto/tareas/:idTarea',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res) =>{
-    var body = req.body;
-    var idProyecto = req.params.idProyecto;
-    var idTarea = req.params.idTarea;
-
-
-
-
-});
 
 
 
