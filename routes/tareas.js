@@ -157,8 +157,8 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
                  if(err){
                      return res.status(500).json({
                          ok:false,
-                         mensaje: 'Error cargando tareas',
-                         errors: err                
+                         errors: {message: 'Error cargando tareas'}  
+               
                  }); }
 
                  Tarea.countDocuments({}, (err,conteo) =>{
@@ -191,8 +191,7 @@ app.get('/:id/tareas',cors({origin:"http://localhost:4200"}),
         if(err){
             return res.status(500).json({
                 ok:false,
-                mensaje: 'Error cargando proyectos',
-                errors: err                
+               errors: {message: 'Error cargando las tareas'}
         }); }
                         
             res.status(200).json({
@@ -214,6 +213,12 @@ app.get('/tareaEditar/:id',cors({origin:"http://localhost:4200"}),[mwAutenticaci
     .populate('creador', 'nombre')
     .populate('participante', 'nombre _id')
     .exec( (err, tarea) =>{
+        if(err){
+            return res.status(401).json({
+                ok:false,
+                 errors: {message: 'Error al obtener la tarea, intente de nuevo por favor '}  
+           })
+        }
         res.status(201).json({
             ok:true,
             tarea:tarea
@@ -234,8 +239,8 @@ app.delete('/:idProyecto/eliminarTarea/:idTarea', cors({origin:"http://localhost
         if(err){
             return res.status(500).json({
                 ok:false,
-                mensaje: 'Error al borrar la tarea',               
-                errors: err                
+                errors: {message: 'Error al borrar la tarea '}  
+              
         }); }
        
         if(!tarea){
