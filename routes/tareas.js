@@ -144,20 +144,22 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
     ////////////////////////
     //Obtener mis tareas
     /////////////////////////
-    app.get('/mistareas/:id', cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken, (req,res) =>{
+    app.get('/:id/mistareas', cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken, (req,res) =>{
 
         var id = req.params.id;
-        Tarea.find({participantes:id})
+        console.log(id)
+        Tarea.find({participante:id})
             .populate('proyecto','nombre _id' )
             .populate('creador', 'nombre')
             .populate('participante', 'nombre')
             .sort({fechaCreacion: 1})
             .exec( (err,tareas) =>{
-
+                    console.log(tareas)
                  if(err){
                      return res.status(500).json({
                          ok:false,
-                         errors: {message: 'Error cargando tareas'}  
+                         errors: {message: 'Error cargando tareas'}  ,
+                         errpr:err
                
                  }); }
 
@@ -165,7 +167,7 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
                      res.status(200).json({
                          ok:true,
                          total: conteo ,
-                         tareas   
+                         tareas:tareas   
                      });
                 });
           
@@ -186,6 +188,7 @@ app.get('/:id/tareas',cors({origin:"http://localhost:4200"}),
     .populate('tareas') 
     .populate({path: 'tareas' ,populate: {path:'participante'}})
     .populate({path: 'tareas', populate: {path: 'creador'}})    
+    
     .exec(
         (err,proyectos) =>{
         if(err){

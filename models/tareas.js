@@ -12,7 +12,7 @@ var tareasSchema = new Schema({
     finalizado:{type: Boolean, default:false,sparse:true}, 
     creador: {type: Schema.Types.ObjectId,required:false,ref:'usuarios',sparse:true},
     ultimoEditor:{type: Schema.Types.ObjectId,required:false,ref:'usuarios',sparse:true},
-    participante:{type: Schema.Types.ObjectId ,required:false,ref:'usuarios',sparse:true},
+    participante:{type: Schema.Types.ObjectId ,required:false,ref:'usuarios'},
     proyecto: {type: Schema.Types.ObjectId, required:true, ref:'proyectos',sparse:true}
 
 },{collection:'tareas'});
