@@ -27,9 +27,9 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
     body.participante.forEach(element => {
          participanteId=element._id;
     });
- 
+            console.log(body.nombreTarea);
             var generaTarea = new Tarea({
-            nombre:body.nombreTarea,
+            nombre:body.nombre,
             descripcion: body.descTarea,
             fechaCreacion: fecha,
             fechaLimite: body.fechaLimite,
