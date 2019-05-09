@@ -85,16 +85,15 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
     /////////////////////////////
     //Actualizar Tarea
     /////////////////////////////
-    app.put('/:idProyecto/actualizar/:idTarea',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res) =>{
+    app.put('/actualizar/:idTarea',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res) =>{
         var body = req.body;
-        var idProyecto = req.params.idProyecto;
+        var idProyecto =body.proyecto._id;
         var idTarea = req.params.idTarea;
         var idParticipante;
         body.participante.forEach(part => {
-            idParticipante = part._id;
-            console.log(part);
-        });
-        console.log(idParticipante);
+            idParticipante = part._id;         
+        });       
+      
  
         Tarea.findById(idTarea, (err,tarea)=>{
     
@@ -235,9 +234,12 @@ app.get('/tareaEditar/:id',cors({origin:"http://localhost:4200"}),[mwAutenticaci
 //Eliminar Tarea
 /////////////////////////////
 
-app.delete('/:idProyecto/eliminarTarea/:idTarea', cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
-    var idProyecto = req.params.idProyecto;
+app.put('/eliminarTarea/:idTarea', cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
+    body = req.body;
+    var idProyecto = body.idProyecto;
     var idTarea = req.params.idTarea;
+    console.log(idTarea)
+    console.log(body)
     Proyecto.findOneAndUpdate({_id:idProyecto}, {$pull: {tareas:idTarea}}, (err,tarea)=>{
         if(err){
             return res.status(500).json({
