@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
  var Usuario = require('../models/usuario');
+ var fs = require('fs');
+ var rimraf = require("rimraf");
  var Proyecto = require('../models/proyectos');
  var mwAutenticacion = require('../middlewares/autenticacion');  
  var jwt = require('jsonwebtoken');
@@ -209,6 +211,21 @@ app.delete('/:id', cors({origin:"http://localhost:4200"}),mwAutenticacion.verifi
                     mensaje: 'No existe un usuario con ese id',               
                     errors: {message: 'No existe un usuario con ese id'}                
             }); }
+            var path = `./uploads/usuarios/${id}`;
+            if(fs.existsSync(path),(err)=>{
+                if(err){
+                    return res.status(400).json({
+                        ok:false,
+                        mensaje: 'Problema al eliminar el contenido del usuario',
+                        error:err
+                    })
+                }
+                rimraf(path, () =>{
+                    console.log('Carpeta eliminada');
+                });
+
+
+            })
             res.status(200).json({
                 ok: true,
                 usuario: usuarioBorrado

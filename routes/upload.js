@@ -1,10 +1,9 @@
 var express = require('express');
 const fileUpload = require('express-fileupload');
 var fs = require('fs');
-var async = require('async');
-var moment = require('moment');
 var md5 = require('md5');
-const fecha = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
+const path = require('path');
+
 var app = express();
 app.use(fileUpload({
     parseNested: true
@@ -72,12 +71,30 @@ app.put('/:tipo/:id/', mwAutenticacion.verificaToken, (req, res) => {
     var nombreFile = `${md5(nombreArchivo[0])}.${ext.toLowerCase()}`;
 
     //Mover el archivo del temporal a un path específico
-    var path = `./uploads/${ tipo }/${id}/${nombreFile}`;
+    var pathArchivo = `./uploads/${ tipo }/${id}/${nombreFile}`;
     var pathCarpeta = `./uploads/${ tipo }/${id}/`;
+    fs.readdir(pathCarpeta, function(err, files) {
+        console.log('files')
+        if (err) {
+           console.log('Error al encontrar la carpeta')
+        } else {
+           if (files.length) {
+               
+            for (const file of files) {
+                fs.unlink(path.join(pathCarpeta, file), err => {
+                  if (err) throw err;
+                });
+              }
+            
+           } 
+        }
+    });
     if (!fs.existsSync(pathCarpeta)) {
         fs.mkdirSync(pathCarpeta)
     }
-    archivo.mv(path, (err) => {
+    
+
+    archivo.mv(pathArchivo, (err) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
@@ -125,14 +142,15 @@ function subirPorTipo(tipo, id, nombreArchivo, res, req) {
                 if (pathViejo != `./uploads/usuarios/${id}/${usuario.img}`) {
                     fs.unlinkSync(pathViejo);
                 }
-
+                
             }
-
+            
             if (usuario.img != nombreArchivo) {
+                
                 usuario.img = nombreArchivo;
             }
             usuario.save((err, usuarioActualizado) => {
-
+                
                 if (err) {
                     return res.status(400).json({
                         ok: false,
@@ -154,5 +172,6 @@ function subirPorTipo(tipo, id, nombreArchivo, res, req) {
     
 
 }
+
 
     module.exports = app;
