@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var moment = require('moment');	
 const fecha = new Date().toLocaleDateString('es-ES');
 
 

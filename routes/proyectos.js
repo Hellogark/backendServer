@@ -8,13 +8,10 @@ var fs = require('fs');
 var md5 = require('md5');
 
 var Proyecto = require('../models/proyectos');
-var Usuario = require('../models/usuario');
 var Archivo = require('../models/archivos');
-var Tarea = require('../models/tareas');
 var cors = require('cors');
 const path = require('path');
 var mwAutenticacion = require('../middlewares/autenticacion'); 
-const multer = require('multer');
 
 
 //===================================
@@ -140,7 +137,7 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
     body.participantes.forEach(element => {
                 arregloPart.push(element._id);
         });
-       // arregloPart=body.participantes;       
+            
     Proyecto.findById(id, (err, proyecto) =>{
 
    

@@ -9,9 +9,7 @@ app.use(fileUpload({
     parseNested: true
 }));
 var Usuario = require('../models/usuario');
-var Proyecto = require('../models/proyectos');
 var mwAutenticacion = require('../middlewares/autenticacion');
-var Archivos = require('../models/archivos');
 
 
 app.put('/:tipo/:id/', mwAutenticacion.verificaToken, (req, res) => {
@@ -73,6 +71,8 @@ app.put('/:tipo/:id/', mwAutenticacion.verificaToken, (req, res) => {
     //Mover el archivo del temporal a un path específico
     var pathArchivo = `./uploads/${ tipo }/${id}/${nombreFile}`;
     var pathCarpeta = `./uploads/${ tipo }/${id}/`;
+    //Busca si en la carpeta del usuario tiene archivos y los elimina
+    //para después añadir la nueva imagen de perfil
     fs.readdir(pathCarpeta, function(err, files) {
         console.log('files')
         if (err) {

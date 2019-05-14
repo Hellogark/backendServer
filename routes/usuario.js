@@ -3,9 +3,7 @@ var app = express();
  var Usuario = require('../models/usuario');
  var fs = require('fs');
  var rimraf = require("rimraf");
- var Proyecto = require('../models/proyectos');
  var mwAutenticacion = require('../middlewares/autenticacion');  
- var jwt = require('jsonwebtoken');
  var cors = require('cors');
 
 

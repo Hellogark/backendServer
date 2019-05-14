@@ -43,10 +43,7 @@ mongoose.connect('mongodb+srv://eduardoAtDinamycs:3v98ZOf7Xijl8bS1@clusterproyec
 
 });
 
-//Server index config
-/* var serveIndex= require('serve-index');
-app.use(express.static(__dirname+'/'));
-app.use('/uploads',serveIndex(__dirname+'/uploads')); */
+
 
 //Rutas
 app.use('/usuario',usuarioRoutes);

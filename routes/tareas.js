@@ -1,7 +1,6 @@
 var express = require('express');
 var app = express();
 var Proyecto = require('../models/proyectos');
-var Usuario = require('../models/usuario');
 var Tarea = require('../models/tareas');
 var cors = require('cors');
 var mwAutenticacion = require('../middlewares/autenticacion'); 

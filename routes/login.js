@@ -78,7 +78,7 @@ app.post('/' ,cors({origin:"http://localhost:4200"}),(req, res) =>{
     });
    
 });
-
+    //Enviar el menu al sitio
     function obtenerMenu( ROLE){
         menu = [
             {
