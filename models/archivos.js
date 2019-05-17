@@ -7,7 +7,6 @@ const fecha = new Date().toLocaleDateString('es-ES');
 var archivosSchema = new Schema({   
         nombre: {type:String, required:true, unique:true},
         fechaCreacion: {type:String, required:true,default:fecha},
-        fechaModificado: {type:String, required:false, default: fecha},
         comentario: {type: String, required: true},
         responsable: {type: Schema.Types.ObjectId,required:true, ref:'usuarios'},     
 },{collection:'archivos'});

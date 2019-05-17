@@ -4,7 +4,7 @@ var moment = require('moment');
 const fecha = moment().locale('es').format("LLL");
 
 var tareasSchema = new Schema({
-    nombre:{type: String, required:false,default:'',unique:true,sparse:true},
+    nombre:{type: String, required:true,default:'',unique:true,sparse:true},
     descripcion: {type: String, required:false,default:'',sparse:true},
     fechaCreacion:{type: String, required:false,default: fecha,sparse:true},
     fechaFinalizado:{type: String, required:false,sparse:true},
