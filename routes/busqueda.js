@@ -72,13 +72,15 @@ app.get('/todo/:busqueda',mwAutenticacion.verificaToken,(req,res,next) =>{
         return new Promise((resolve, reject) =>{
             
 
-             Proyecto.find({ nombre: regex })
+             Proyecto.find({}, 'nombre nombreEmpresa fechaCreacion fechaProyectada participantes')
+                .or([{'nombre': regex}])
+                .or([{'nombreEmpresa':regex}])                
                 .populate('responsable', 'nombre correo role fechaCreacion')
                 .populate('ultimoEditor', 'nombre')
                 .exec(      
               (err,proyectos) =>{
                 if(err){
-                    reject('Error al cargar hospitales', err);
+                    reject('Error al cargar proyectos', err);
                 }else{
 
                     resolve(proyectos);
@@ -87,15 +89,24 @@ app.get('/todo/:busqueda',mwAutenticacion.verificaToken,(req,res,next) =>{
         });
         });
     }
+
+    function buscarMisProyectos(regex){
+        
+
+    }
        
     function buscarUsuarios( busqueda, regex ){
 
         return new Promise((resolve, reject) =>{
             
             
-             Usuario.find({},'nombre correo role empresa activo img ').populate('proyectos').or([{'nombre': regex}]).exec((err,usuarios)=>{
+             Usuario.find({},'nombre correo role empresa activo img ').populate('proyectos')
+             .or([{'nombre': regex}])
+             .or([{'correo':regex}])
+             .or([{'empresa':regex}])
+             .exec((err,usuarios)=>{
                     if(err){
-                        reject('Error al cargar hospitales', err);
+                        reject('Error al cargar usuarios', err);
                     }else{
                          resolve(usuarios);
                     }
