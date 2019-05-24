@@ -33,9 +33,9 @@ var archivosRoutes = require('./routes/archivos');
 var busquedaRoutes = require('./routes/busqueda');
 var uploadRoutes = require('./routes/upload');
 var tareasRoutes= require('./routes/tareas');
-var obtenerArchivosRoutes = require('./routes/obtenerArchivos');
+var obtenerImgPerfilRoutes = require('./routes/obtenerImgPerfil');
 
-//conexion a la bd
+//Conexión realizada a atlas
 mongoose.connect('mongodb+srv://eduardoAtDinamycs:3v98ZOf7Xijl8bS1@clusterproyectos-da6ml.mongodb.net/DinamycsProyectos?retryWrites=true',{useNewUrlParser: true}, (err, res) => {
     if(err) throw err;
     console.log('Base de datos online:\x1b[5m%s\x1b[0m',' online');
@@ -52,7 +52,7 @@ app.use('/archivos',archivosRoutes);
 app.use('/login',loginRoutes);
 app.use('/busqueda',busquedaRoutes);
 app.use('/upload',uploadRoutes);
-app.use('/descarga',obtenerArchivosRoutes);
+app.use('/imgPerfil',obtenerImgPerfilRoutes);
 app.use('/tareas',tareasRoutes);
 app.use('/',appRoutes);
 

@@ -17,6 +17,16 @@ var mwAutenticacion = require('../middlewares/autenticacion');
 //===================================
 //obtener todos los proyectos ADMIN
 //===================================
+/**
+ * 
+ * @api {GET} proyectos/ Obtener todos los proyectos
+ * @apiName Obtener todos los proyectos
+ * @apiGroup Proyectos
+ * 
+ * @apiSuccess (200) {json} ProyetosEncontrados Envía los proyectos encontrados 
+ * @apiError (500) {json} ErrorCargandopProyectos Error al cargar los proyectos desde el servidor
+ * 
+ */
 app.get('/',cors({origin:"http://localhost:4200"}),
 [mwAutenticacion.verificaToken],
 ( req, res, next ) => {
@@ -48,6 +58,18 @@ app.get('/',cors({origin:"http://localhost:4200"}),
 
         });
 });
+/**
+ * 
+ * @api {GET} proyectos/id/:id Obtener proyecto a editar
+ * @apiName Editar Proyecto
+ * @apiGroup Proyectos
+ * @apiParam  {String} id id del proyecto a editar
+ * @apiSuccess (200) {json} ProyectoAEditar Devuelve los datos del proyecto a editar 
+ * @apiError (400) {json} ProyectoNoEncontrado Error si no se encontró el proeycto en la base de datos
+ * @apiError (500) {json} ErrorAlBuscarProeycto Error al momento de buscar el proyecto
+ * 
+ * 
+ */
 //Obtener Proyecto a editar
 app.get('/id/:id',cors({origin:"http://localhost:4200"}), ( req, res, next ) => {
     /*Campos a  devolver como segundo parámetro*/ 
@@ -94,7 +116,17 @@ app.get('/id/:id',cors({origin:"http://localhost:4200"}), ( req, res, next ) => 
 //======================================
 //Obtener proyectos en los que participo
 //======================================
-//OBTENER MIS PORYECTOS
+/**
+ * 
+ * @api {GET} proeyctos/misproyectos/:id Obtener mis proyectos
+ * @apiName Mis Proyectos
+ * @apiGroup Proyectos
+ * @apiParam  {String} id id del usuario
+ * @apiSuccess (200) {json} MisProyectos Devuelve un json con la información de los proyectos en los que participa el usuario
+ * @apiError (500) {json} ErrorBuscando Error mientras se buscaba el proyecto
+ * 
+ * 
+ */
 app.get('/misproyectos/:id', cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken, (req,res) =>{
 
 var id = req.params.id;
@@ -127,7 +159,19 @@ var id = req.params.id;
 //===================================
 //Actualizar los proyectos
 //===================================
-//:id especifica un segmento en la ruta /proyecto/id
+
+/**
+ * 
+ * @api {PUT} proyectos/editarProyecto/:id Editar Proyecto
+ * @apiName Editar Proyecto
+ * @apiGroup Proyectos
+ * @apiParam  {String} id id del proyecto a editar
+ * 
+ * @apiSuccess (200) {json} ProyectoEditado Devuelve el proyecto editado
+ * @apiError (400) {json} ProyectoNoEncontrado Error si no se enconró el proyecto buscado en la base de datos
+ * @apiError (500) {json} ErrorAlBuscarProyecto Error al momento de buscar el proyecto
+ * 
+ */
 app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res) =>{
     var id = req.params.id;
     var body = req.body;
@@ -186,6 +230,22 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
 //////////////////
 //Subir archivo
 //////////////////
+/**
+ * 
+ * @api {PUT} proyectos/:id/archivos Subir archivo al servidor y registrar en la base de datos
+ * @apiName Subir archivo
+ * @apiGroup Archivos
+ * @apiParam  {String} id id del proyecto para el cual se subirá y registrará el archivo
+ * @apiSuccess (200) {json} ArchivoSubidoCorrectamente Devuelve un mensaje al completarse la subida del archivo
+ * @apiError (400) {json} ArchivoInvalido Error si el archivo es inválido
+ * @apiError (400) {json} ErrorAlBuscarArchivo Error al momento de buscar del archivo
+ * @apiError (409) {json} ArchivoYaExistente Error si el archivo subido ya existe con el mismo nombre
+ * @apiError (400) {json} ErrorAlBuscarProyecto Error al momento de buscar el proyecto en la base de datos
+ * @apiError (400) {json} ErrorBuscandoElArchivo Error buscando si el archivo existe en el servidor
+ * @apiError (400) {json} ErrorRegistrandoElArchivo Error al momento de registrar el archivo en la base de datos
+ * @apiError (400) {json} ErrorRelacionandoElArchivo Error al momento de añadir el archivo al proyecto
+ * @apiError (500) {json} ErrorMoviendoElArchivo Error al momento de mover el archivo en el servidor a la carpeta correspondiente  
+ */
     app.put('/:id/archivos',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res) =>{
         var idProyecto = req.params.id;
    
@@ -199,7 +259,6 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
         var encontrado = false;
         if(extensionesProyecto.indexOf(ext.toLowerCase()) < 0) {
         return res.status(400).json({
-
             ok: false,
             mensaje: 'El archivo seleccionado no es válido',
             errors: {
@@ -322,6 +381,14 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
 });                                 
 });
  
+ /** 
+  * @api {GET} proyectos/:id/descargar/:nombre Descargar el archivo del servidor
+  * @apiName Descargar el archivo
+  * @apiGroup Archivos
+  * @apiParam  {String} id id del archivo
+  * @apiParam {String} nombre Nombre del archivo a descargar
+  * @apiError (400) {json} ErrorAlBuscarArchivo Error al buscar el archivo en el servidor
+  */
 
    ////////////////////////////////////
    //Descargar archvio

@@ -56,7 +56,7 @@ app.get('/',( req, res, next ) => {
  * @apiError (400) {json} err Error al crear archivo 
  */
 //===================================
-// Crear los archivos POST
+// Crear los archivos en la base de datos POST
 //===================================
 app.post('/',mwAutenticacion.verificaToken,(req, res) =>{
     var body = req.body;
