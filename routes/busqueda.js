@@ -10,30 +10,18 @@ var Usuario = require('../models/usuario');
 /**
  * 
  * @api {GET} busqueda/info/:tabla/:busqueda Busqueda en usuarios o proyectos
- * @apiName Búsqueda específica
- * @apiGroup Búsqueda
- * 
- * 
+ * @apiName Busqueda específica
+ * @apiGroup Busqueda
  * @apiParam  {String} tabla Nombre de la colección en la que se busca
  * @apiParam {String} busqueda Término a buscar 
- * @apiSuccess (200) {Object} name description
+ * @apiSuccess (200) {json} ArregloDeDatos Devuelve un arreglo de usuarios o proyectos encontrados por la búsqueda
+ * @apiError (400) {json} TiposIncorrectos Error cuando se buscan tablas que no existen 
  * 
- * @apiParamExample  {json} Request-Example:
- * {
- *     tabla : personas
- * }
- * 
- * 
- * @apiSuccessExample {type} Success-Response:
- * {
- *     property : value
- * }
- * 
- * 
- */
+ *  */
 app.get('/info/:tabla/:busqueda',mwAutenticacion.verificaToken, (req,res) =>{
 
     var busqueda = req.params.busqueda;
+    //La i de regex hace la expersión insensible a mayúsculas
     var regex = new RegExp(busqueda,'i');
     var tabla = req.params.tabla;
     var promesa;
@@ -54,6 +42,7 @@ app.get('/info/:tabla/:busqueda',mwAutenticacion.verificaToken, (req,res) =>{
     promesa.then(data =>{
         return res.status('200').json({
             ok:true,
+            //tabla está entre corchetes porque el nombre del objeto es el valor de la variable
             [tabla]:data
             
         });
@@ -61,7 +50,17 @@ app.get('/info/:tabla/:busqueda',mwAutenticacion.verificaToken, (req,res) =>{
     });
 });
 
-
+/**
+ * 
+ * @api {GET} busqueda/todo/:busqueda Esta ruta nos permite encontrar usuarios y proyectos
+ * @apiName Busqueda general
+ * @apiGroup Busqueda
+ * @apiVersion  major.minor.patch
+ * @apiParam  {String} busqueda El término que se recibe para buscar
+ * @apiSuccess (200) {json} respuesta Devuelve un objeto que contiene el/los usuario(s) y/o proyecto(s) encontrado(s)
+ * 
+ * 
+ */
 //============================
 //Busqueda General
 //============================
@@ -91,7 +90,10 @@ app.get('/todo/:busqueda',mwAutenticacion.verificaToken,(req,res,next) =>{
  
    
 });
-
+    /*
+     * Esta función retorna los proyectos encontrados, los busca por nombre o por nombre de la empresa
+     *
+     */
     function buscarProyectos( busqueda, regex ){
 
         return new Promise((resolve, reject) =>{
@@ -116,7 +118,9 @@ app.get('/todo/:busqueda',mwAutenticacion.verificaToken,(req,res,next) =>{
     }
 
    
-       
+    /*
+     * Esta función retorna los usuarios encontrados, los busca por nombre, correo y empresa     
+     */
     function buscarUsuarios( busqueda, regex ){
 
         return new Promise((resolve, reject) =>{

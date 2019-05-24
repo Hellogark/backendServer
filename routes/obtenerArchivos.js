@@ -23,14 +23,9 @@ app.get('/:tipo/:id/:img',( req, res, next ) => {
         case 'proyectos':
         if(fs.existsSync(pathArchivo)){
             res.download(pathArchivo);       
-        }else{
-
         }
 
-        break;
-    
-        default:
-            break;
+        break;    
     }
     
    

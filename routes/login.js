@@ -15,6 +15,16 @@ var mwAutenticacion = require('../middlewares/autenticacion');
 //Renovar Token
 //=================================
 
+/**
+ * 
+ * @api {GET} login/renuevatoken Renovación del token del usuario
+ * @apiName Renovar token
+ * @apiGroup Login 
+ * @apiSuccess (200) {json} token devuelve un nuevo token
+ * 
+ * 
+ * 
+ */
 app.get('/renuevatoken',cors({origin:"http://localhost:4200"}), (req , res) =>{
     var token = jwt.sign({usuario: req.usuario}, SEED,{expiresIn:'1h'});
 
@@ -27,7 +37,19 @@ app.get('/renuevatoken',cors({origin:"http://localhost:4200"}), (req , res) =>{
 } );
 
 
+/**
+ * 
+ * @api {POST} login/ Iniciar Sesion
+ * @apiName Verificar login
+ * @apiGroup Login
+ * 
 
+ * 
+ * @apiSuccess (200) {json} LoginCorrecto Envía los datos del usuario y un token
+ * @apiError (500) {json} ErrorDeBusqueda Error al no encontrar el usuario en la base de datos
+ * @apiError (400) {json} CredencialesIncorrectas Error si la autenticación del usuario falla
+ * @apiError (400) {json} UsuarioInactivo Error si el usuario no está en estaado activo
+ */
 app.post('/' ,cors({origin:"http://localhost:4200"}),(req, res) =>{
     
     var body = req.body;
