@@ -90,10 +90,7 @@ app.get('/todo/:busqueda',mwAutenticacion.verificaToken,(req,res,next) =>{
         });
     }
 
-    function buscarMisProyectos(regex){
-        
-
-    }
+   
        
     function buscarUsuarios( busqueda, regex ){
 

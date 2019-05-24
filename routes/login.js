@@ -15,7 +15,7 @@ var mwAutenticacion = require('../middlewares/autenticacion');
 //Renovar Token
 //=================================
 
-app.get('/renuevatoken',cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken, (req , res) =>{
+app.get('/renuevatoken',cors({origin:"http://localhost:4200"}), (req , res) =>{
     var token = jwt.sign({usuario: req.usuario}, SEED,{expiresIn:'1h'});
 
     res.status(200).json({
