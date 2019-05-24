@@ -5,6 +5,15 @@ var mwAutenticacion = require('../middlewares/autenticacion');
 //===================================
 //obtener los archivos
 //===================================
+
+/**
+ * 
+ * @api {GET} archivos/ Obtener todos los archivos
+ * @apiName Obtener todos los archivos
+ * @apiGroup Archivos
+ * @apiSuccess (200) {json} archivos Devuelve todos los archivos de la base de datos
+ * @apiError (500) {json} err Error cargando archivos
+ */
 app.get('/',( req, res, next ) => {
     /*Campos a  devolver como segundo parámetro*/ 
     var desde = req.query.desde || 0;
@@ -38,7 +47,14 @@ app.get('/',( req, res, next ) => {
         });
 });
 
-
+/**
+ * 
+ * @api {POST} archivos/ Registrar archivos
+ * @apiName Registrar archivo subido
+ * @apiGroup Archivos
+ * @apiSuccess (200) {json} archivoGuardado Objeto con los datos del archivo guardado
+ * @apiError (400) {json} err Error al crear archivo 
+ */
 //===================================
 // Crear los archivos POST
 //===================================
@@ -50,13 +66,14 @@ app.post('/',mwAutenticacion.verificaToken,(req, res) =>{
         fechaCreacion: body.fechaCreacion,
         fechaModificado: body.fechaModificado,
         responsable: req.Usuario._id,
-        proyecto: body.proyecto /*EL. proyecto es el nombre del atributo proyecto de archivo module*/
+        proyecto: body.proyecto 
+        /*EL proyecto es el nombre del atributo proyecto de archivo module*/
         
     });
 
     archivo.save( (err, archivoGuardado) =>{
         if(err){
-            return res.status(400).json({
+            return res.status(500).json({
                 ok:false,
                 mensaje: 'Error al crear archivo',
                 errors: err                
@@ -66,15 +83,21 @@ app.post('/',mwAutenticacion.verificaToken,(req, res) =>{
             ok:true,
             archivo: archivoGuardado
            
-    });
-    res.status(200).json({
-        ok:true,
-        body   
-    });
+    });    
 
     });
 });
-
+/**
+ * 
+ * @api {PUT} archivos/:id Actualizar archivos
+ * @apiName Actualizar archivos
+ * @apiGroup Archivos
+ * @apiParam  {String} id id del archivo a modificar
+ * @apiSuccess (200) {json} archivoGuardado Objeto que devuelve al actualizar el archivo
+ * @apiError (500) {json} errorBuscandoArchivo Error al buscar archivo
+ * @apiError (400) {json} archivoNoEncontrado Error el archivo con el id  no existe
+ * @apiError (400) {json} errorActualizandoArchivo Error al actualizar el archivo
+ */
 //===================================
 //Actualizar los archivos
 //===================================
@@ -128,7 +151,21 @@ app.put('/:id',mwAutenticacion.verificaToken,(req,res) =>{
 //Eliminar archivos por id
 //===================================
 
-
+/**
+ * 
+ * @api {DELETE} archivos/:id Eliminar archivo
+ * @apiName Eliminar archivo de la base de datos
+ * @apiGroup Archivos
+ * 
+ * 
+ * @apiParam  {String} id id del archivo a eliminar
+ * 
+ * @apiSuccess (200) {json} archivoBorrado Objeto devuelto al eliminar archivo de la base de datos
+ * @apiError (500) {json} errorBorrandoArchivo Error al borrar el archivo
+ * @apiError (400) {json} errorBuscandoArchivo No existe un archivo con ese id
+ * 
+ * 
+ */
 app.delete('/:id', mwAutenticacion.verificaToken,(req,res)=>{
         var id = req.params.id;
         Archivos.findByIdAndRemove(id,(err, archivoBorrado)=>{

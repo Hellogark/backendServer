@@ -1,0 +1,1 @@
+Este manual técnico es para el código back-end del gestor de proyectos

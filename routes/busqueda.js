@@ -6,6 +6,31 @@ var Usuario = require('../models/usuario');
 //============================
 //Busqueda Específica
 //============================
+
+/**
+ * 
+ * @api {GET} busqueda/info/:tabla/:busqueda Busqueda en usuarios o proyectos
+ * @apiName Búsqueda específica
+ * @apiGroup Búsqueda
+ * 
+ * 
+ * @apiParam  {String} tabla Nombre de la colección en la que se busca
+ * @apiParam {String} busqueda Término a buscar 
+ * @apiSuccess (200) {Object} name description
+ * 
+ * @apiParamExample  {json} Request-Example:
+ * {
+ *     tabla : personas
+ * }
+ * 
+ * 
+ * @apiSuccessExample {type} Success-Response:
+ * {
+ *     property : value
+ * }
+ * 
+ * 
+ */
 app.get('/info/:tabla/:busqueda',mwAutenticacion.verificaToken, (req,res) =>{
 
     var busqueda = req.params.busqueda;

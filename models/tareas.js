@@ -16,5 +16,6 @@ var tareasSchema = new Schema({
     proyecto: {type: Schema.Types.ObjectId, required:true, ref:'proyectos',sparse:true}
 
 },{collection:'tareas'});
+/**ínidce para encontrar los participantes de las tareas */
 tareasSchema.index({'participante':1});
 module.exports = mongoose.model('tareas',tareasSchema);

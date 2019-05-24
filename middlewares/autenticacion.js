@@ -1,10 +1,12 @@
-//===================================
-//Verificar token con next() middelware
-//===================================
 var SEED = require('../config/config').SEED;
 var jwt = require('jsonwebtoken');
+
+/**
+* Middleware para verificación del token del usuario
+*/
 exports.verificaToken= function (req,res,next) {
     var token = req.query.token;
+
     jwt.verify(token,SEED,(err,decoded)=>{
         if(err){
             
@@ -14,7 +16,8 @@ exports.verificaToken= function (req,res,next) {
                 errors: err                
         });
         }  
-        req.Usuario = decoded.usuario;           //En cualquier lugar obtener la información del usuario que mandó la solicitud
+         //En cualquier lugar obtener la información del usuario que mandó la solicitud
+        req.Usuario = decoded.usuario; 
         next();
                            
     });
