@@ -27,7 +27,7 @@ var mwAutenticacion = require('../middlewares/autenticacion');
  * @apiError (500) {json} ErrorCargandopProyectos Error al cargar los proyectos desde el servidor
  * 
  */
-app.get('/',cors({origin:"http://localhost:4200"}),
+app.get('/' ,
 [mwAutenticacion.verificaToken],
 ( req, res, next ) => {
     /*Campos a  devolver como segundo parámetro*/ 
@@ -71,7 +71,7 @@ app.get('/',cors({origin:"http://localhost:4200"}),
  * 
  */
 //Obtener Proyecto a editar
-app.get('/id/:id',cors({origin:"http://localhost:4200"}), ( req, res, next ) => {
+app.get('/id/:id' , ( req, res, next ) => {
     /*Campos a  devolver como segundo parámetro*/ 
     var id = req.params.id;
     var desde = req.query.desde || 0;
@@ -127,7 +127,7 @@ app.get('/id/:id',cors({origin:"http://localhost:4200"}), ( req, res, next ) => 
  * 
  * 
  */
-app.get('/misproyectos/:id', cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken, (req,res) =>{
+app.get('/misproyectos/:id'  ,mwAutenticacion.verificaToken, (req,res) =>{
 
 var id = req.params.id;
     Proyecto.find({participantes:id})
@@ -172,7 +172,7 @@ var id = req.params.id;
  * @apiError (500) {json} ErrorAlBuscarProyecto Error al momento de buscar el proyecto
  * 
  */
-app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res) =>{
+app.put('/editarProyecto/:id' ,[mwAutenticacion.verificaToken],(req,res) =>{
     var id = req.params.id;
     var body = req.body;
     var arregloPart = [];
@@ -227,6 +227,88 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
 
 
 });
+/**
+ * 
+ * @api {POST} proyectos/:id Crear Proyecto
+ * @apiName Crear proyecto
+ * @apiGroup Proyectos
+ * @apiParam  {String} id id del usuario
+ * @apiSuccess (200) {json} ProyectoCreado Regresa el proyecto que ha sido creado
+ * @apiError (400) {json} ErrorCreandoProyecto Error al crear el proyecto
+ * 
+ */
+
+//===================================
+// Crear los proyectos POST
+//===================================
+app.post('/:id' ,[mwAutenticacion.verificaToken],(req, res) =>{
+    var body = req.body;
+    var id = req.params.id;
+    var proyecto = new Proyecto({
+        nombre: body.nombre,
+        descripcion: body.descripcion,
+        fechaCreacion: body.fechaCreacion,
+        nombreEmpresa: body.nombreEmpresa,
+        responsable: id
+    });
+
+    proyecto.save( (err, proyectoGuardado) =>{
+        if(err){
+            return res.status(400).json({
+                ok:false,
+                mensaje: 'Error al crear proyecto',
+                errors: err                
+        }); }
+
+        res.status(201).json({
+            ok:true,
+            proyecto: proyectoGuardado,            
+    });
+    
+
+    });
+});
+
+
+//===================================
+//Eliminar proyectos por id
+//===================================
+
+/**
+ * 
+ * @api {DELETE} proyectos/:id Eliminar Proyecto
+ * @apiName Eliminar Proyecto
+ * @apiGroup Proyectos 
+ * @apiParam  {String} id id del proyecto a eliminar
+ * @apiSuccess (200) {json} ProyectoEliminado Regresa el proyecto que ha sido eliminado
+ * @apiError (400) {json} ProyectoInexistente Error al encontrar el archivo en la base de datos
+ * @apiError (500) {json} ErrorEliminandoProyecto Error al eliminar el proyecto
+ * 
+ * 
+ */
+app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
+        var id = req.params.id;
+        Proyecto.findByIdAndRemove(id,(err, proyectoBorrado)=>{
+     
+            if(err){
+                return res.status(500).json({
+                    ok:false,
+                    mensaje: 'Error al borrar proyecto',               
+                    errors: err                
+            }); }
+           
+            if(!proyectoBorrado){
+                return res.status(400).json({
+                    ok:false,
+                    mensaje: 'No existe un proyecto con ese id',               
+                    errors: {message: 'No existe un proyecto con ese id'}                
+            }); }
+            res.status(200).json({
+                ok: true,
+                proyecto: proyectoBorrado
+            });
+        });
+});
 //////////////////
 //Subir archivo
 //////////////////
@@ -246,7 +328,7 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
  * @apiError (400) {json} ErrorRelacionandoElArchivo Error al momento de añadir el archivo al proyecto
  * @apiError (500) {json} ErrorMoviendoElArchivo Error al momento de mover el archivo en el servidor a la carpeta correspondiente  
  */
-    app.put('/:id/archivos',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res) =>{
+    app.put('/:id/archivos' ,[mwAutenticacion.verificaToken],(req,res) =>{
         var idProyecto = req.params.id;
    
         var body = req.body;
@@ -394,7 +476,7 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
    //Descargar archvio
    ///////////////////////////////////
 
-    app.get('/:id/descargar/:nombre',cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken,(req,res)=>{
+    app.get('/:id/descargar/:nombre' ,mwAutenticacion.verificaToken,(req,res)=>{
         var params = req.params;    
         var id = params.id;
         var nombre = params.nombre;
@@ -425,25 +507,39 @@ app.put('/editarProyecto/:id',cors({origin:"http://localhost:4200"}),[mwAutentic
     });
     
 
+    /**
+     * 
+     * @api {DELETE} proyectos/:idProyecto/archivo/:id Eliminar Archivo
+     * @apiName Eliminar Archivo del proyecto
+     * @apiGroup Archivos
+     * @apiParam  {String} idProyecto id del proyecto el cual pertenece el archivo
+     * @apiParam  {String} id id del archivo a eliminar
+     * @apiSuccess (200) {object} ArchivoEliminado Envía el archivo que ha sido eliminado
+     * @apiError (400) {json} ArchivoInexistente  El archivo con el id no existe en la base de datos
+     * @apiError (400) {json} ProeyctoInexistente El proyecto con ese id no existe en la base de datos
+     * @apiError (500) {json} ErrorAlEliminarArchivo Error al momento de eliminar el archivo
+     * @apiError (500) {json} ErrorEncontrandoProyecto Error al momento de encontrar el proyecto
+     * 
+     */
 //////////////////////////////////
 //Eliminar Archivos
 /////////////////////////////////
-app.delete( '/:idProyecto/archivo/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res)=>{
+app.delete( '/:idProyecto/archivo/:id' ,[mwAutenticacion.verificaToken],(req,res)=>{
 
     var id = req.params.id;
     var idProyecto = req.params.idProyecto;
-    Proyecto.findOneAndUpdate({_id:idProyecto}, {$pull: {archivos:id}}, (err,archivo)=>{
+    Proyecto.findOneAndUpdate({_id:idProyecto}, {$pull: {archivos:id}}, (err,proyecto)=>{
         if(err){
             return res.status(500).json({
                 ok:false,
-                mensaje: 'Error al borrar archivo',               
+                mensaje: 'Error al encontrar el proyecto',               
                 errors: err                
         }); }
        
-        if(!archivo){
+        if(!proyecto){
             return res.status(400).json({
                 ok:false,
-                mensaje: 'No existe un archivo con ese id en el proyecto',               
+                mensaje: 'No existe un proyecto con ese id',               
                 errors: {message: 'No existe un archivo con ese id'}                
         }); }
         Archivo.findByIdAndRemove(id,(err, archivoBorrado)=>{
@@ -474,66 +570,6 @@ app.delete( '/:idProyecto/archivo/:id',cors({origin:"http://localhost:4200"}),[m
 });
 
 
-//===================================
-// Crear los proyectos POST
-//===================================
-app.post('/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req, res) =>{
-    var body = req.body;
-    var id = req.params.id;
-    var proyecto = new Proyecto({
-        nombre: body.nombre,
-        descripcion: body.descripcion,
-        fechaCreacion: body.fechaCreacion,
-        nombreEmpresa: body.nombreEmpresa,
-        responsable: id
-    });
-
-    proyecto.save( (err, proyectoGuardado) =>{
-        if(err){
-            return res.status(400).json({
-                ok:false,
-                mensaje: 'Error al crear proyecto',
-                errors: err                
-        }); }
-
-        res.status(201).json({
-            ok:true,
-            proyecto: proyectoGuardado,            
-    });
-    
-
-    });
-});
-
-
-//===================================
-//Eliminar proyectos por id
-//===================================
-
-
-app.delete('/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
-        var id = req.params.id;
-        Proyecto.findByIdAndRemove(id,(err, proyectoBorrado)=>{
-     
-            if(err){
-                return res.status(500).json({
-                    ok:false,
-                    mensaje: 'Error al borrar proyecto',               
-                    errors: err                
-            }); }
-           
-            if(!proyectoBorrado){
-                return res.status(400).json({
-                    ok:false,
-                    mensaje: 'No existe un proyecto con ese id',               
-                    errors: {message: 'No existe un proyecto con ese id'}                
-            }); }
-            res.status(200).json({
-                ok: true,
-                proyecto: proyectoBorrado
-            });
-        });
-});
 
 
 

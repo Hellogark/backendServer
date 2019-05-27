@@ -11,7 +11,18 @@ var app = express();
 //===================================
 //obtener los usuarios
 //===================================
-app.get('/',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],( req, res, next ) => {
+/**
+ * 
+ * @api {GET} usuario/ Obtener usuarios
+ * @apiName Obtener usuarios
+ * @apiGroup Usuarios
+ * 
+ * @apiSuccess (200) {json} usuarios Devuelve todos los usuarios
+ * @apiError (500) {json} ErrorCargandoUsuarios Error al momento de cargar usuarios
+ * 
+ * 
+ */
+app.get('/' ,[mwAutenticacion.verificaToken],( req, res, next ) => {
     var desde = req.query.desde || 0;
     desde = Number(desde);
     Usuario.find({}, 'nombre correo img role empresa activo')
@@ -42,11 +53,19 @@ app.get('/',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToke
         });
 });
 
-
+/**
+ * 
+ * @api {POST} / Crear usuario
+ * @apiName Crear usuario
+ * @apiGroup Usuarios
+ * @apiSuccess (201) {json} UsuarioCreado Devuelve el usuario creado
+ * @apiError (400) {json} ErrorCreandoUsuario Error al momento de crear un usuario
+ * 
+ */
 //===================================
 // Crear los usuarios POST
 //===================================
-app.post('/',cors({origin:"http://localhost:4200"}),(req, res) =>{
+app.post('/' ,(req, res) =>{
     var body = req.body;
     var usuario = new Usuario({
         nombre: body.nombre,
@@ -59,7 +78,6 @@ app.post('/',cors({origin:"http://localhost:4200"}),(req, res) =>{
 
 
     });
-
     usuario.save( (err, usuarioGuardado) =>{
         if(err){
             return res.status(400).json({
@@ -70,18 +88,31 @@ app.post('/',cors({origin:"http://localhost:4200"}),(req, res) =>{
 
         res.status(201).json({
             ok:true,
-            usuario: usuarioGuardado,
-            usuariotoken: req.usuario
+            usuario: usuarioGuardado,          
     });    
 
     });
 });
 
 //===================================
-//Actualizar los usuarios
+//Actualizar usuario
 //===================================
-//:id especifica un segmento en la ruta /usuario/id
-app.put('/:id',mwAutenticacion.verificaToken,cors({origin:"http://localhost:4200"}),(req,res) =>{
+
+/**
+ * 
+ * @api {PUT} usuario/:id Actualziar Usuario (Perfil)
+ * @apiName Actualizar Usuario
+ * @apiGroup Usuarios
+ * @apiParam  {String} id id del usuario a actualizar
+ * 
+ * @apiSuccess (200) {json} UsuarioActualizado Devuelve el usuario actualizado
+ * @apiError (400) {json} ErrorActualizandoUsuario Error al actualizar el usuario
+ * @apiError (400) {json} PasswordIncorrecto EL password introducido para actualizar es incorrecto
+ * @apiError (400) {json} UsuarioInexistente Usuario con el id no existe
+ * @apiError (500) {json} ErrorBuscandoUsuario Error al buscar el usuario
+ * 
+ */
+app.put('/:id',mwAutenticacion.verificaToken ,(req,res) =>{
     var id = req.params.id;
     var body = req.body;
     Usuario.findById(id, (err, usuario) =>{
@@ -137,10 +168,23 @@ app.put('/:id',mwAutenticacion.verificaToken,cors({origin:"http://localhost:4200
 
 
 });
+/**
+ * 
+ * @api {PUT} usuario/editarUsuario/:id Editar usuarios
+ * @apiName Editar Usuario
+ * @apiGroup Usuarios
+ * @apiParam  {String} id id del usuario a editar
+ * 
+ * @apiSuccess (200) {json} name description
+ * @apiError (400) {json} ErrorActualizandoUsuario Error al momento de actualizar el usuario
+ * @apiError (400) {json} UsuarioInexistente Usuario con el id no existe
+ * @apiError (500) {json} ErrorBuscandoUsuario Error al buscar el usuario
+ * 
+ */
 //===================================
 //editar ususarios por id
 //===================================
-app.put('/editarUsuario/:id',[mwAutenticacion.verificaToken],cors({origin:"http://localhost:4200"}),(req,res) =>{
+app.put('/editarUsuario/:id',[mwAutenticacion.verificaToken] ,(req,res) =>{
     var id = req.params.id;
     var body = req.body;
  
@@ -191,8 +235,23 @@ app.put('/editarUsuario/:id',[mwAutenticacion.verificaToken],cors({origin:"http:
 //Eliminar ususarios por id
 //===================================
 
+/**
+ * 
+ * @api {DELETE} usuario/:id Eliminar Usuario
+ * @apiName EliminarUsuario
+ * @apiGroup Usuarios
+ * 
+ * 
+ * @apiParam  {String} id id del usuario a eliminar
+ * 
+ * @apiSuccess (200) {json} UsuarioEliminado Devuelve el usuario eliminado
+ * @apiError (400) {json} ErrorEliminandoDatosDelUsuario Error al momento de eliminar los archivos pertenecientes al usuario
+ * @apiError (400) {json} UsuarioInexistente Usuario con el id no existe
 
-app.delete('/:id', cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken,(req,res)=>{
+ * @apiError (500) {json} ErrorEliminandoUsuario Error al eliminar el usuario
+ */
+
+app.delete('/:id'  ,mwAutenticacion.verificaToken,(req,res)=>{
         var id = req.params.id;
         Usuario.findByIdAndRemove(id,(err, usuarioBorrado)=>{
      

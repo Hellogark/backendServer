@@ -25,7 +25,7 @@ var mwAutenticacion = require('../middlewares/autenticacion');
  * 
  * 
  */
-app.get('/renuevatoken',cors({origin:"http://localhost:4200"}), (req , res) =>{
+app.get('/renuevatoken' , (req , res) =>{
     var token = jwt.sign({usuario: req.usuario}, SEED,{expiresIn:'1h'});
 
     res.status(200).json({
@@ -42,15 +42,12 @@ app.get('/renuevatoken',cors({origin:"http://localhost:4200"}), (req , res) =>{
  * @api {POST} login/ Iniciar Sesion
  * @apiName Verificar login
  * @apiGroup Login
- * 
-
- * 
  * @apiSuccess (200) {json} LoginCorrecto Envía los datos del usuario y un token
  * @apiError (500) {json} ErrorDeBusqueda Error al no encontrar el usuario en la base de datos
  * @apiError (400) {json} CredencialesIncorrectas Error si la autenticación del usuario falla
  * @apiError (400) {json} UsuarioInactivo Error si el usuario no está en estaado activo
  */
-app.post('/' ,cors({origin:"http://localhost:4200"}),(req, res) =>{
+app.post('/' ,cors(),(req, res) =>{
     
     var body = req.body;
     Usuario.findOne({correo: body.correo}, (err,usuarioDB)=>{

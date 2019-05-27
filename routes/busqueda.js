@@ -55,7 +55,6 @@ app.get('/info/:tabla/:busqueda',mwAutenticacion.verificaToken, (req,res) =>{
  * @api {GET} busqueda/todo/:busqueda Esta ruta nos permite encontrar usuarios y proyectos
  * @apiName Busqueda general
  * @apiGroup Busqueda
- * @apiVersion  major.minor.patch
  * @apiParam  {String} busqueda El término que se recibe para buscar
  * @apiSuccess (200) {json} respuesta Devuelve un objeto que contiene el/los usuario(s) y/o proyecto(s) encontrado(s)
  * 

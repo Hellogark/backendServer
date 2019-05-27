@@ -15,11 +15,21 @@ const fecha = moment().locale('es').format("LLL");
 //Operaciones de tareas     //
 /////////////////////////////
 
-
+/**
+ * 
+ * @api {POST} tareas/:id/crear Crear Tarea
+ * @apiName Crear Tarea
+ * @apiGroup Tareas
+ * @apiParam  {String} id id del proyecto
+ * 
+ * @apiSuccess (200) {json} TareaCreada Devuelve la tarea creada
+ * @apiError (400) {json} ErrorCreandoTarea Error al momento de crear la tarea
+ * @apiError (400) {json} ErrorVinculandoTarea Error al vincular la tarea con el proyecto
+ */
 ////////////////////////
 //Crear Tarea
 ///////////////////////
-app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
+app.post('/:id/crear' ,[mwAutenticacion.verificaToken], (req,res) =>{
     var body = req.body;
     var idProyecto = req.params.id;
     var participanteId;
@@ -62,12 +72,21 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
     });
 });
 
-
+/**
+ * 
+ * @api {PUT} tareas/tareaTerminada Terminar tarea
+ * @apiName Terminar tarea
+ * @apiGroup Tareas
+ * @apiParam  {String} idT id de la tarea
+ * 
+ * @apiSuccess (200) {json} TareaActualizada Devuelve la tarea actualizada
+ * 
+ */
 
     ////////////////////////
     //Actualizar checked
     ///////////////////////
-    app.put('/tareaTerminada/:idT', cors({origin: "http://localhost:4200"}),mwAutenticacion.verificaToken,( req, res)=>{
+    app.put('/tareaTerminada/:idT', cors({origin: "http://localhost:80"}),mwAutenticacion.verificaToken,( req, res)=>{
         var body = req.body;
         //console.log(body);
         var idTarea = req.params.idT;
@@ -81,10 +100,22 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
 
     });
 
+    /**
+     * 
+     * @api {PUT} tareas/actualizar/:idTarea Actualizar la tarea
+     * @apiName Actualizar tarea
+     * @apiGroup Tareas    
+     * @apiParam  {String} idTarea id de la tarea a actualizar
+     * 
+     * @apiSuccess (200) {json} TareaActualizada Regresa la tarea actualizada
+     * @apiError (400) {json} TareaInexistente La tarea con el id no existe
+     * @apiError (400) {json} ErrorAlActualizar Error al actualizar la tarea
+     * @apiError (500) {json} ErrorBuscandoTarea Error al buscar la tarea en la base de datos
+     */
     /////////////////////////////
     //Actualizar Tarea
     /////////////////////////////
-    app.put('/actualizar/:idTarea',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],(req,res) =>{
+    app.put('/actualizar/:idTarea' ,[mwAutenticacion.verificaToken],(req,res) =>{
         var body = req.body;
         var idProyecto =body.proyecto._id;
         var idTarea = req.params.idTarea;
@@ -131,18 +162,24 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
                 
                 
             })
-        });
-    
-    
-    
-    
+        });                
     });
 
-
+/**
+ * 
+ * @api {GET} tareas/:id/mistareas Obtener tareas del usuario
+ * @apiName Mis tareas
+ * @apiGroup Tareas
+ * @apiParam  {String} id id del usuario 
+ * @apiSuccess (200) {json} Tareas Se envían las tareas a las cuales el usuario está asignado
+ * @apiError (500) {json} ErrorObteniendoTareas Error mientras se obtenían las tareas
+ * 
+ * 
+ */
     ////////////////////////
     //Obtener mis tareas
     /////////////////////////
-    app.get('/:id/mistareas', cors({origin:"http://localhost:4200"}),mwAutenticacion.verificaToken, (req,res) =>{
+    app.get('/:id/mistareas'  ,mwAutenticacion.verificaToken, (req,res) =>{
 
         var id = req.params.id;
         console.log(id)
@@ -172,10 +209,22 @@ app.post('/:id/crear',cors({origin:"http://localhost:4200"}),[mwAutenticacion.ve
          });
     });     
 
-    ////////////////////////////////////////
+    /**
+     * 
+     * @api {GET} tareas/:id/tareas Obtene todas las tareas
+     * @apiName Obtener todas las tareas
+     * @apiGroup Tareas
+     * @apiParam  {String} id id del proyecto
+     * 
+     * @apiSuccess (200) {json} tareas Devuelve las tareas encontradas del proyecto
+     * @apiError (500) ErrorCargandoTareas Error al momento de obtener las tareas
+     * 
+     * 
+     */
+///////////////////////////////////////////
 //Obtener Todas las tareas del proyecto
 ///////////////////////////////////////
-app.get('/:id/tareas',cors({origin:"http://localhost:4200"}),
+app.get('/:id/tareas' ,
 [mwAutenticacion.verificaToken],
 ( req, res, next ) => {
     /*Campos a  devolver como segundo parámetro*/ 
@@ -188,7 +237,7 @@ app.get('/:id/tareas',cors({origin:"http://localhost:4200"}),
     .populate({path: 'tareas', populate: {path: 'creador'}})    
     
     .exec(
-        (err,proyectos) =>{
+        (err,tareas) =>{
         if(err){
             return res.status(500).json({
                 ok:false,
@@ -197,16 +246,16 @@ app.get('/:id/tareas',cors({origin:"http://localhost:4200"}),
                         
             res.status(200).json({
                 ok:true,          
-                proyectos   
+                tareas   
             });    
 
         });
 });
 
 /////////////////////////////
-//Obtener Una Tarea
+//Editar Tarea
 /////////////////////////////
-app.get('/tareaEditar/:id',cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken],( req, res ) =>{
+app.get('/tareaEditar/:id' ,[mwAutenticacion.verificaToken],( req, res ) =>{
     var idTarea = req.params.id;
 
     Tarea.findById(idTarea)
@@ -227,13 +276,23 @@ app.get('/tareaEditar/:id',cors({origin:"http://localhost:4200"}),[mwAutenticaci
     });
 } );
 
-
+/**
+ * 
+ * @api {DELETE} tareas/eliminarTarea/:idTarea Eliminar tarea
+ * @apiName Eliminar Tarea
+ * @apiGroup Tareas
+ * @apiParam  {String} idTarea id de la tarea a eliminar
+ * 
+ * @apiSuccess (200) {json} TareaEliminada Devuelve la tarea eliminada 
+ * @apiError (400) {json} TareaInexistente La tarea a eliminar no existe
+ * @apiError (500) {json} ErrorEliminandoLaTarea Error al momento de eliminar la tarea
+ */
 
 /////////////////////////////
 //Eliminar Tarea
 /////////////////////////////
 
-app.put('/eliminarTarea/:idTarea', cors({origin:"http://localhost:4200"}),[mwAutenticacion.verificaToken], (req,res) =>{
+app.put('/eliminarTarea/:idTarea'  ,[mwAutenticacion.verificaToken], (req,res) =>{
     body = req.body;
     var idProyecto = body.idProyecto;
     var idTarea = req.params.idTarea;
@@ -243,7 +302,7 @@ app.put('/eliminarTarea/:idTarea', cors({origin:"http://localhost:4200"}),[mwAut
         if(err){
             return res.status(500).json({
                 ok:false,
-                errors: {message: 'Error al borrar la tarea '}  
+                errors: {message: 'Error al elimnar la tarea del proyecto '}  
               
         }); }
        

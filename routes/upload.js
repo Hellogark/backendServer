@@ -11,48 +11,41 @@ app.use(fileUpload({
 var Usuario = require('../models/usuario');
 var mwAutenticacion = require('../middlewares/autenticacion');
 
-
-app.put('/:tipo/:id/', mwAutenticacion.verificaToken, (req, res) => {
-    var tipo = req.params.tipo;
-    var id = req.params.id;
-    //Tipos de colecciones
-    var tiposValidos = ['usuarios', 'proyectos'];
-    if (tiposValidos.indexOf(tipo) < 0) {
-        return res.status(400).json({
-
-            ok: false,
-            mensaje: 'Tipo de colección no válida',
-            errors: {
-                message: 'La colección especificada no existe o está mal escrita'
-            }
-        });
-
-    }
+////////////////////////////////////////////////
+//Subir imagen de perfil
+////////////////////////////////////////////////
+/**
+ * 
+ * @api {PUT} upload/:id Subir imagen de perfil
+ * @apiName Subir imagen de perfil
+ * @apiGroup Archivos
+ * @apiParam {String} id id del usuario
+ * @apiSuccess (200) {json} usuarioActualizad Devuelve el usuario actualizdo lo cual permite refrescar la imagen de perfil en la aplciación web
+ * @apiError (400) {json} ArchivoInvalido El archivo seleccionado es inválido
+ * @apiError (400) {json} UsuarioNoEncontrado El usuario con el id no pudo ser encontrado
+ * @apiError (400) {json} ArchivoNoEncontrado Problemas al encontrar el archivo
+ * @apiError (400) {json} NoSeAcualizóLaImagen La imagen de perfil no se puedo actualizar
+ * @apiError (500) {json} ErrorLimpiandoCarpeta Error al momento de limpiar la carpeta del usuario
+ * @apiError (500) {json} ErrorMoviendoArchivo Error al mover el archivo a la carpeta designada
+ * 
+ */
+app.put('/:id', mwAutenticacion.verificaToken, (req, res) => {    
+    var id = req.params.id;  
    
     //Obtener nombre del archivo
-    var archivo;
-    if (tipo === 'usuarios') {
-        archivo = req.files.img;
+    var archivo;  
+        archivo = req.files.img;   
 
-    }
-
-    if (tipo === 'proyectos') {
-        if(req.files.archivos == undefined){
-            return;
-        }
-        archivo = req.files.archivos;
-    }
+   
     var nombreArchivo = archivo.name.split('.');
     var ext = nombreArchivo[nombreArchivo.length - 1];
     //Extensiones aceptadas
 
-    var extensionesUsuario = ['png', 'jpg', 'jpeg', 'gif'];
-    var extensionesProyecto = ['rar', 'zip'];
+    var extensionesUsuario = ['png', 'jpg', 'jpeg', 'gif'];   
 
     //buscar dentro del arreglo     
 
-    if ((tipo === 'usuarios' && extensionesUsuario.indexOf(ext.toLowerCase()) < 0) ||
-        (tipo === 'proyectos' && extensionesProyecto.indexOf(ext.toLowerCase()) < 0)) {
+    if (extensionesUsuario.indexOf(ext.toLowerCase()) < 0) {
         return res.status(400).json({
 
             ok: false,
@@ -69,14 +62,17 @@ app.put('/:tipo/:id/', mwAutenticacion.verificaToken, (req, res) => {
     var nombreFile = `${md5(nombreArchivo[0])}.${ext.toLowerCase()}`;
 
     //Mover el archivo del temporal a un path específico
-    var pathArchivo = `./uploads/${ tipo }/${id}/${nombreFile}`;
-    var pathCarpeta = `./uploads/${ tipo }/${id}/`;
+    var pathArchivo = `./uploads/usuarios/${id}/${nombreFile}`;
+    var pathCarpeta = `./uploads/usuarios/${id}/`;
     //Busca si en la carpeta del usuario tiene archivos y los elimina
     //para después añadir la nueva imagen de perfil
-    fs.readdir(pathCarpeta, function(err, files) {
-        console.log('files')
+    fs.readdir(pathCarpeta, function(err, files) {       
         if (err) {
-           console.log('Error al encontrar la carpeta')
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Error limpiando la carpeta del usuario',
+                errors: err
+            });
         } else {
            if (files.length) {
                
@@ -104,7 +100,7 @@ app.put('/:tipo/:id/', mwAutenticacion.verificaToken, (req, res) => {
 
         }
 
-        subirPorTipo(tipo, id, nombreFile, res, req);
+        subirImgPerfil( id, nombreFile, res, req);
 
 
     });
@@ -115,8 +111,10 @@ app.put('/:tipo/:id/', mwAutenticacion.verificaToken, (req, res) => {
 
 });
 
-function subirPorTipo(tipo, id, nombreArchivo, res, req) {
-    if (tipo === 'usuarios') {
+/**
+ * Función que nos permite  reemplazar el arcchivo en caso de que exista 
+ */
+function subirImgPerfil(id, nombreArchivo, res, req) {   
         Usuario.findById(id, (err, usuario) => {
             if (!usuario) {
                 return res.status(400).json({
@@ -168,7 +166,7 @@ function subirPorTipo(tipo, id, nombreArchivo, res, req) {
             });
 
         });
-    }
+    
     
 
 }
