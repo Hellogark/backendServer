@@ -36,12 +36,16 @@ var tareasRoutes= require('./routes/tareas');
 var obtenerImgPerfilRoutes = require('./routes/obtenerImgPerfil');
 
 //Conexión realizada a atlas
-mongoose.connect('mongodb+srv://eduardoAtDinamycs:3v98ZOf7Xijl8bS1@clusterproyectos-da6ml.mongodb.net/DinamycsProyectos?retryWrites=true',{useNewUrlParser: true}, (err, res) => {
-    if(err) throw err;
-    console.log('Base de datos online:\x1b[5m%s\x1b[0m',' online');
-
-
-});
+//mongodb+srv://eduardoAtDinamycs:3v98ZOf7Xijl8bS1@clusterproyectos-da6ml.mongodb.net/DinamycsProyectos?retryWrites=true
+try {
+    mongoose.connect('mongodb+srv://eduardoAtDinamycs:3v98ZOf7Xijl8bS1@clusterproyectos-da6ml.mongodb.net/DinamycsProyectos?retryWrites=true',{useNewUrlParser: true}, (err, res) => {
+        if(err) throw err;
+        console.log('Base de datos online:\x1b[5m%s\x1b[0m',' online');
+    });
+    
+} catch (error) {
+    console.log('Error en la conexión a la base de datos:\x1b[5m%s\x1b[0m',' online');
+}
 
 
 

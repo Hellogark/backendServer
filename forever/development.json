@@ -1,0 +1,12 @@
+{
+	
+    "uid": "gestor_proyecto",
+    "append": true,
+    "watch": true,
+    "wacth-ignore": "./uploads",
+    "script": "app.js",
+    "sourceDir": "/Users/edmol/Documents/curso Html/angular/ProyectoResidencia/backendServer",
+    "logFile": "/Users/edmol/logs/forever.log",
+    "outFile": "/Users/edmol/logs/out.log",
+    "errFile": "/Users/edmol/logs/error.log"
+}
