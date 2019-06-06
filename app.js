@@ -1,9 +1,9 @@
 // Requires importación de librerias
-var express = require('express');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const helmet = require('helmet');
 
 
 //inicializar variables, aquí se usa la librería
@@ -18,6 +18,7 @@ app.use(function(req, res, next) {
 });
 
 app.use(cors());
+app.use(helmet());
 //Body parser
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));

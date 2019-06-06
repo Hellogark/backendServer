@@ -86,7 +86,7 @@ app.post('/:id/crear' ,[mwAutenticacion.verificaToken], (req,res) =>{
     ////////////////////////
     //Actualizar checked
     ///////////////////////
-    app.put('/tareaTerminada/:idT', cors({origin: "http://localhost:80"}),mwAutenticacion.verificaToken,( req, res)=>{
+    app.put('/tareaTerminada/:idT',mwAutenticacion.verificaToken,( req, res)=>{
         var body = req.body;
         //console.log(body);
         var idTarea = req.params.idT;
