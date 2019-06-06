@@ -17,8 +17,8 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(cors());
 app.use(helmet());
+app.use(cors());
 //Body parser
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));

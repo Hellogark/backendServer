@@ -104,7 +104,7 @@ app.post('/' ,cors(),(req, res) =>{
               titulo: 'Principal',
               icono: 'mdi mdi-gauge',
               submenu: [
-                { titulo: 'Dashboard', url: '/inicio' },
+                { titulo: 'Inicio', url: '/inicio' },
                 { titulo : 'Proyectos en los que participo', url: '/misproyectos' },   
                 { titulo: 'Mis tareas', url: '/mistareas' }                                                    
               ]
