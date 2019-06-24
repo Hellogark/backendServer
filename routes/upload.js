@@ -1,10 +1,10 @@
-var express = require('express');
+const express = require('express');
 const fileUpload = require('express-fileupload');
-var fs = require('fs');
-var md5 = require('md5');
+const fs = require('fs');
+const md5 = require('md5');
 const path = require('path');
-
-var app = express();
+var cloudinary = require('cloudinary').v2;
+const app = express();
 app.use(fileUpload({
     parseNested: true
 }));
@@ -14,7 +14,9 @@ var mwAutenticacion = require('../middlewares/autenticacion');
 ////////////////////////////////////////////////
 //Subir imagen de perfil
 ////////////////////////////////////////////////
-/**
+/**,opciones, 
+        (err, res) => {console.log(err, res); 
+         }
  * 
  * @api {PUT} upload/:id Subir imagen de perfil
  * @apiName Subir imagen de perfil
@@ -29,38 +31,47 @@ var mwAutenticacion = require('../middlewares/autenticacion');
  * @apiError (500) {json} ErrorMoviendoArchivo Error al mover el archivo a la carpeta designada
  * 
  */
-app.put('/:id', mwAutenticacion.verificaToken, (req, res) => {    
+app.put('/:id', mwAutenticacion.verificaToken,async (req, res) => {    
     var id = req.params.id;  
-   
+   console.log(req.files.path+'a');
     //Obtener nombre del archivo
-    var archivo;  
-        archivo = req.files.img;   
-
+    var archivo = req.files.img;   
+    console.log(archivo.data)
+ 
    
     var nombreArchivo = archivo.name.split('.');
     var ext = nombreArchivo[nombreArchivo.length - 1];
     //Extensiones aceptadas
-
     var extensionesUsuario = ['png', 'jpg', 'jpeg', 'gif'];   
-
+    
     //buscar dentro del arreglo     
-
+    
     if (extensionesUsuario.indexOf(ext.toLowerCase()) < 0) {
         return res.status(400).json({
-
+            
             ok: false,
             mensaje: 'El archivo seleccionado no es válido',
             errors: {
                 message: 'Archivo no válido'
             }
-
+            
         });
-
+        
     }
-
+    
     //Nombre de archivo Personalizado
     var nombreFile = `${md5(nombreArchivo[0])}.${ext.toLowerCase()}`;
+    archivo.name = nombreFile;
+    var opciones ={        
+        public_id: archivo.name,
+        use_filename:true,
+        unique_filename:false,
+        folder: `usuarios/${id}/`,
+        use_filename:true
+    };
 
+   const result = await cloudinary.uploader.upload_stream(opciones, res=>console.log(res)).end(archivo.data);
+   console.log(result)
     //Mover el archivo del temporal a un path específico
     var pathArchivo = `./uploads/usuarios/${id}/${nombreFile}`;
     var pathCarpeta = `./uploads/usuarios/${id}/`;
@@ -170,6 +181,8 @@ function subirImgPerfil(id, nombreArchivo, res, req) {
     
 
 }
+
+
 
 
     module.exports = app;

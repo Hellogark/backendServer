@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
-
+var dotenv = require('dotenv');
+dotenv.config();
 
 //inicializar variables, aquí se usa la librería
 var app = express();
