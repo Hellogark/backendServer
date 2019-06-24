@@ -334,11 +334,11 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
         var body = req.body;
         var archivoObj = JSON.parse(body.archivoObj);
         var archivo = req.files.archivos;
-       
+      
         var nombreArchivo = archivo.name.split('.');
         var ext = nombreArchivo[nombreArchivo.length - 1];
         var extensionesProyecto = ['rar', 'zip'];
-        var encontrado = false;
+        var encontrado = false;      
         if(extensionesProyecto.indexOf(ext.toLowerCase()) < 0) {
         return res.status(400).json({
             ok: false,
