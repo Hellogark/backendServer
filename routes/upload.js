@@ -3,11 +3,11 @@ const fileUpload = require('express-fileupload');
 const fs = require('fs');
 const md5 = require('md5');
 const path = require('path');
-var cloudinary = require('cloudinary').v2;
 const app = express();
-app.use(fileUpload({
+ app.use(fileUpload({
     parseNested: true
-}));
+})); 
+var subirArchivo = require('../modules/func_Cloudinary');
 var Usuario = require('../models/usuario');
 var mwAutenticacion = require('../middlewares/autenticacion');
 
@@ -31,7 +31,7 @@ var mwAutenticacion = require('../middlewares/autenticacion');
  * @apiError (500) {json} ErrorMoviendoArchivo Error al mover el archivo a la carpeta designada
  * 
  */
-app.put('/:id', mwAutenticacion.verificaToken,async (req, res) => {    
+app.put('/:id', mwAutenticacion.verificaToken, (req, res) => {    
     var id = req.params.id;  
    console.log(req.files.path+'a');
     //Obtener nombre del archivo
@@ -60,56 +60,12 @@ app.put('/:id', mwAutenticacion.verificaToken,async (req, res) => {
     }
     
     //Nombre de archivo Personalizado
-    var nombreFile = `${md5(nombreArchivo[0])}.${ext.toLowerCase()}`;
-    archivo.name = nombreFile;
-    var opciones ={        
-        public_id: archivo.name,
-        use_filename:true,
-        unique_filename:false,
-        folder: `usuarios/${id}/`,
-        use_filename:true
-    };
-
-   const result = await cloudinary.uploader.upload_stream(opciones, res=>console.log(res)).end(archivo.data);
-   console.log(result)
-    //Mover el archivo del temporal a un path específico
-    var pathArchivo = `./uploads/usuarios/${id}/${nombreFile}`;
-    var pathCarpeta = `./uploads/usuarios/${id}/`;
-    //Busca si en la carpeta del usuario tiene archivos y los elimina
-    //para después añadir la nueva imagen de perfil
-    fs.readdir(pathCarpeta, function(err, files) {       
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'Error limpiando la carpeta del usuario',
-                errors: err
-            });
-        } else {
-           if (files.length) {
-               
-            for (const file of files) {
-                fs.unlink(path.join(pathCarpeta, file), err => {
-                  if (err) throw err;
-                });
-              }
-            
-           } 
-        }
-    });
-    if (!fs.existsSync(pathCarpeta)) {
-        fs.mkdirSync(pathCarpeta)
-    }
+    var nombreFile = `${md5(nombreArchivo[0])}`;
+    //Funcion para subir el archio a cloudinary
+    subirArchivo.subirCloud(id,nombreFile,archivo,"usuarios",ext,res);
     
-
-    archivo.mv(pathArchivo, (err) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'Error al mover el archivo',
-                errors: err
-            });
-
-        }
+    //Mover el archivo del temporal a un path específico
+   
 
         subirImgPerfil( id, nombreFile, res, req);
 
@@ -117,10 +73,6 @@ app.put('/:id', mwAutenticacion.verificaToken,async (req, res) => {
     });
 
 
-
-
-
-});
 
 /**
  * Función que nos permite  reemplazar el arcchivo en caso de que exista 
@@ -135,25 +87,7 @@ function subirImgPerfil(id, nombreArchivo, res, req) {
                 });
             }
 
-
-            var pathViejo = `./uploads/usuarios/${id}/${usuario.img}`;
-            //Si existe archivo lo elimina
-            if (fs.existsSync(pathViejo, (err) => {
-                    if (err) {
-                        return res.status(400).json({
-                            ok: false,
-                            mensaje: 'Problemas al encontrar el archivo',
-                            error: err
-                        });
-                    }
-
-                })) {
-                if (pathViejo != `./uploads/usuarios/${id}/${usuario.img}`) {
-                    fs.unlinkSync(pathViejo);
-                }
-                
-            }
-            
+    
             if (usuario.img != nombreArchivo) {
                 
                 usuario.img = nombreArchivo;

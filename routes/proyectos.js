@@ -6,10 +6,9 @@ app.use(fileUpload({
 }));
 var fs = require('fs');
 var md5 = require('md5');
-
+var subirArchivo = require('../modules/func_Cloudinary');
 var Proyecto = require('../models/proyectos');
 var Archivo = require('../models/archivos');
-var cors = require('cors');
 const path = require('path');
 var mwAutenticacion = require('../middlewares/autenticacion'); 
 
@@ -334,11 +333,10 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
         var body = req.body;
         var archivoObj = JSON.parse(body.archivoObj);
         var archivo = req.files.archivos;
-       
+      
         var nombreArchivo = archivo.name.split('.');
         var ext = nombreArchivo[nombreArchivo.length - 1];
         var extensionesProyecto = ['rar', 'zip'];
-        var encontrado = false;
         if(extensionesProyecto.indexOf(ext.toLowerCase()) < 0) {
         return res.status(400).json({
             ok: false,
@@ -374,7 +372,7 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
                 
             }
         } })
-        
+     subirArchivo.subirCloud(idProyecto,nombreFile,archivo,"proyectos",ext,res);   
    var path = `./uploads/proyectos/${idProyecto}/${nombreFile}`;
     var pathCarpeta = `./uploads/proyectos/${idProyecto}/`;
     if (!fs.existsSync(pathCarpeta)) {
@@ -425,7 +423,8 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
         var archivoBd = new Archivo({
             nombre: nombreFile,
             responsable:archivoObj.responsable,
-            comentario: archivoObj.comentario
+            comentario: archivoObj.comentario,
+            imageURL: `https://res.cloudinary.com/dinamycstest/raw/upload/proyectos/${idProyecto}/${nombreFile}`
 
         });
            
