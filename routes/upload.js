@@ -62,11 +62,8 @@ app.put('/:id', mwAutenticacion.verificaToken, (req, res) => {
     //Nombre de archivo Personalizado
     var nombreFile = `${md5(nombreArchivo[0])}`;
     //Funcion para subir el archio a cloudinary
-    subirArchivo.subirCloud(id,nombreFile,archivo,"usuarios",ext,res);
-    
-    //Mover el archivo del temporal a un path específico
-   
-
+    subirArchivo.subirCloud(id,nombreFile,archivo,"usuarios",ext,res);    
+    //Mover el archivo del temporal a un path específico   
         subirImgPerfil( id, nombreFile, res, req);
 
 
