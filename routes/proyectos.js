@@ -373,21 +373,7 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
             }
         } })
      subirArchivo.subirCloud(idProyecto,nombreFile,archivo,"proyectos",ext,res);   
-   var path = `./uploads/proyectos/${idProyecto}/${nombreFile}`;
-    var pathCarpeta = `./uploads/proyectos/${idProyecto}/`;
-    if (!fs.existsSync(pathCarpeta)) {
-        fs.mkdirSync(pathCarpeta)
-    }
-    archivo.mv(path, (err) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                errors: {
-                    message: 'Error al mover el archivo',    
-               } 
-            });
 
-        }});
           Proyecto.findById(idProyecto, (err, proyecto) => {
             if (!proyecto) {
                 return res.status(400).json({
@@ -424,7 +410,7 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
             nombre: nombreFile,
             responsable:archivoObj.responsable,
             comentario: archivoObj.comentario,
-            imageURL: `https://res.cloudinary.com/dinamycstest/raw/upload/proyectos/${idProyecto}/${nombreFile}`
+            archivoURL: `https://res.cloudinary.com/dinamycstest/raw/upload/fl_attachment/proyectos/${idProyecto}/${nombreFile}`
 
         });
            

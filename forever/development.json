@@ -5,8 +5,8 @@
     "watch": true,
     "wacth-ignore": "./uploads",
     "script": "app.js",
-    "sourceDir": "/Users/edmol/Documents/curso Html/angular/ProyectoResidencia/backendServer",
-    "logFile": "/Users/edmol/logs/forever.log",
-    "outFile": "/Users/edmol/logs/out.log",
-    "errFile": "/Users/edmol/logs/error.log"
+    "sourceDir": "/Users/edmol/Documents/GitHub/backendServer",
+    "logFile": "/logs/forever.log",
+    "outFile": "/logs/out.log",
+    "errFile": "/logs/error.log"
 }
