@@ -35,7 +35,6 @@ var archivosRoutes = require('./routes/archivos');
 var busquedaRoutes = require('./routes/busqueda');
 var uploadRoutes = require('./routes/upload');
 var tareasRoutes= require('./routes/tareas');
-var obtenerImgPerfilRoutes = require('./routes/obtenerImgPerfil');
 
 //Conexión realizada a atlas
 //mongodb+srv://eduardoAtDinamycs:3v98ZOf7Xijl8bS1@clusterproyectos-da6ml.mongodb.net/DinamycsProyectos?retryWrites=true
@@ -58,7 +57,6 @@ app.use('/archivos',archivosRoutes);
 app.use('/login',loginRoutes);
 app.use('/busqueda',busquedaRoutes);
 app.use('/upload',uploadRoutes);
-app.use('/imgPerfil',obtenerImgPerfilRoutes);
 app.use('/tareas',tareasRoutes);
 app.use('/',appRoutes);
 

@@ -268,21 +268,7 @@ app.delete('/:id'  ,mwAutenticacion.verificaToken,(req,res)=>{
                     mensaje: 'No existe un usuario con ese id',               
                     errors: {message: 'No existe un usuario con ese id'}                
             }); }
-            var path = `./uploads/usuarios/${id}`;
-            if(fs.existsSync(path),(err)=>{
-                if(err){
-                    return res.status(400).json({
-                        ok:false,
-                        mensaje: 'Problema al eliminar el contenido del usuario',
-                        error:err
-                    })
-                }
-                rimraf(path, () =>{
-                    console.log('Carpeta eliminada');
-                });
-
-
-            })
+       
             res.status(200).json({
                 ok: true,
                 usuario: usuarioBorrado

@@ -322,7 +322,6 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
  * @apiError (400) {json} ErrorAlBuscarArchivo Error al momento de buscar del archivo
  * @apiError (409) {json} ArchivoYaExistente Error si el archivo subido ya existe con el mismo nombre
  * @apiError (400) {json} ErrorAlBuscarProyecto Error al momento de buscar el proyecto en la base de datos
- * @apiError (400) {json} ErrorBuscandoElArchivo Error buscando si el archivo existe en el servidor
  * @apiError (400) {json} ErrorRegistrandoElArchivo Error al momento de registrar el archivo en la base de datos
  * @apiError (400) {json} ErrorRelacionandoElArchivo Error al momento de añadir el archivo al proyecto
  * @apiError (500) {json} ErrorMoviendoElArchivo Error al momento de mover el archivo en el servidor a la carpeta correspondiente  
@@ -384,28 +383,7 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
 
                 });
             }
-            
-
-            var pathViejo = `./uploads/proyectos/${idProyecto}/${proyecto.archivos.nombre}`;
-            //Si existe archivo lo elimina
-            if (fs.existsSync(pathViejo, (err) => {
-                    if (err) {
-                        return res.status(400).json({
-                            ok: false,                           
-                            errors: {
-                                message: 'Problemas al encontrar el archivo',    
-                           } 
-                        });
-                    }
-                   
-
-                })) {
-
-                if (pathViejo != `./uploads/proyectos/${idProyecto}/${proyecto.archivos.nombre}`) {
-                    fs.unlinkSync(pathViejo);
-                }
-            } else {     
-               
+     
         var archivoBd = new Archivo({
             nombre: nombreFile,
             responsable:archivoObj.responsable,
@@ -413,8 +391,7 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
             archivoURL: `https://res.cloudinary.com/dinamycstest/raw/upload/fl_attachment/proyectos/${idProyecto}/${nombreFile}`
 
         });
-           
-       
+
         archivoBd.save((err, resp) => {
             
              if (err) {
@@ -444,9 +421,11 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
                 });
         
         });
-    }
-});                                 
+    });
 });
+    
+                                
+
  
 
    
@@ -470,23 +449,29 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
 /////////////////////////////////
 app.delete( '/:idProyecto/archivo/:id' ,[mwAutenticacion.verificaToken], async (req,res)=>{
     var body =  req.body;
-
-    var public_id = body.archivo.nombre.split('.');
-    console.log(public_id[0].toString())
-   return await cloudinary.uploader.destroy('464ed5c2d1ccbff558f72105768c4079.zip',  function (err, res) {
-            if(err){
-                console.log(err);
-                return res.status(400).json({
-                    ok:false,
-                    mensaje: 'Hubo un problema al eliminar el archivo',
-                    errors:err
-                })
-            }
-            console.log(res);
-
-    })
-    var id = req.params.id;
-    var idProyecto = req.params.idProyecto;
+    var params = req.params;
+    var id = params.id;
+    var idProyecto = params.idProyecto;
+    var public_id = `proyectos/${idProyecto}/${body.archivo.nombre}`;
+    console.log(public_id);
+    try {
+        
+        await cloudinary.uploader.destroy(public_id,  {invalidate: true, resource_type: "raw"}, function (err, res) {
+                 if(err){
+                     console.log(err);
+                     return res.status(400).json({
+                         ok:false,
+                         mensaje: 'Hubo un problema al eliminar el archivo',
+                         errors:err
+                     })
+                 }
+                 console.log(res);
+     
+         })
+    } catch (error) {
+        console.log(error)       
+    }
+   
     Proyecto.findOneAndUpdate({_id:idProyecto}, {$pull: {archivos:id}}, (err,proyecto)=>{
         if(err){
             return res.status(500).json({
