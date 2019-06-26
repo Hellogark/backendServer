@@ -4,12 +4,12 @@ const fileUpload = require('express-fileupload');
 app.use(fileUpload({
     parseNested: true
 }));
+var cloudinary = require('cloudinary').v2;
 var fs = require('fs');
 var md5 = require('md5');
 var subirArchivo = require('../modules/func_Cloudinary');
 var Proyecto = require('../models/proyectos');
 var Archivo = require('../models/archivos');
-const path = require('path');
 var mwAutenticacion = require('../middlewares/autenticacion'); 
 
 
@@ -448,49 +448,8 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
 });                                 
 });
  
- /** 
-  * @api {GET} proyectos/:id/descargar/:nombre Descargar el archivo del servidor
-  * @apiName Descargar el archivo
-  * @apiGroup Archivos
-  * @apiParam  {String} id id del archivo
-  * @apiParam {String} nombre Nombre del archivo a descargar
-  * @apiError (400) {json} ErrorAlBuscarArchivo Error al buscar el archivo en el servidor
-  */
 
-   ////////////////////////////////////
-   //Descargar archvio
-   ///////////////////////////////////
-
-    app.get('/:id/descargar/:nombre' ,mwAutenticacion.verificaToken,(req,res)=>{
-        var params = req.params;    
-        var id = params.id;
-        var nombre = params.nombre;
-        var pathArchivo = path.resolve(__dirname,`../uploads/proyectos/${id}/${nombre}`);
-        if(!fs.existsSync(pathArchivo)){
-             return res.status(400).json({
-                    ok:false,
-                    errors:{
-                        message:'No existe el archivo'
-                    }
-                });
-
-        }
-        res.sendFile(pathArchivo,'Recursos del proyecto', (err) =>{
-            if (err) {
-                return res.status(400).json({
-                    ok:false,
-                    errors:{
-                        message:'No existe el archivo',
-                        err:err
-                    }
-                });
-              }          
-              
-        })
-        
-
-    });
-    
+   
 
     /**
      * 
@@ -509,8 +468,23 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
 //////////////////////////////////
 //Eliminar Archivos
 /////////////////////////////////
-app.delete( '/:idProyecto/archivo/:id' ,[mwAutenticacion.verificaToken],(req,res)=>{
+app.delete( '/:idProyecto/archivo/:id' ,[mwAutenticacion.verificaToken], async (req,res)=>{
+    var body =  req.body;
 
+    var public_id = body.archivo.nombre.split('.');
+    console.log(public_id[0].toString())
+   return await cloudinary.uploader.destroy('464ed5c2d1ccbff558f72105768c4079.zip',  function (err, res) {
+            if(err){
+                console.log(err);
+                return res.status(400).json({
+                    ok:false,
+                    mensaje: 'Hubo un problema al eliminar el archivo',
+                    errors:err
+                })
+            }
+            console.log(res);
+
+    })
     var id = req.params.id;
     var idProyecto = req.params.idProyecto;
     Proyecto.findOneAndUpdate({_id:idProyecto}, {$pull: {archivos:id}}, (err,proyecto)=>{
