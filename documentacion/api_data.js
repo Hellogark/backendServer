@@ -65,49 +65,6 @@ define({ "api": [
     "groupTitle": "Archivos"
   },
   {
-    "type": "GET",
-    "url": "proyectos/:id/descargar/:nombre",
-    "title": "Descargar el archivo del servidor",
-    "name": "Descargar_el_archivo",
-    "group": "Archivos",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "id",
-            "description": "<p>id del archivo</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "nombre",
-            "description": "<p>Nombre del archivo a descargar</p>"
-          }
-        ]
-      }
-    },
-    "error": {
-      "fields": {
-        "400": [
-          {
-            "group": "400",
-            "type": "json",
-            "optional": false,
-            "field": "ErrorAlBuscarArchivo",
-            "description": "<p>Error al buscar el archivo en el servidor</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "routes/proyectos.js",
-    "groupTitle": "Archivos"
-  },
-  {
     "type": "DELETE",
     "url": "proyectos/:idProyecto/archivo/:id",
     "title": "Eliminar Archivo",
@@ -376,13 +333,6 @@ define({ "api": [
             "group": "400",
             "type": "json",
             "optional": false,
-            "field": "ErrorBuscandoElArchivo",
-            "description": "<p>Error buscando si el archivo existe en el servidor</p>"
-          },
-          {
-            "group": "400",
-            "type": "json",
-            "optional": false,
             "field": "ErrorRegistrandoElArchivo",
             "description": "<p>Error al momento de registrar el archivo en la base de datos</p>"
           },
@@ -598,43 +548,6 @@ define({ "api": [
   },
   {
     "type": "GET",
-    "url": "imgPerfil/:tipo/:id/:img",
-    "title": "Obtener la imagen del usuario desde el servidor",
-    "name": "Obtener_imagen_de_perfil",
-    "group": "Img_Perfil",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "tipo",
-            "description": "<p>Tipo de usuario</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "id",
-            "description": "<p>id del usuario</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "img",
-            "description": "<p>Nombre de la imagen</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "routes/obtenerImgPerfil.js",
-    "groupTitle": "Img_Perfil"
-  },
-  {
-    "type": "GET",
     "url": "login/renuevatoken",
     "title": "Renovación del token del usuario",
     "name": "Renovar_token",
@@ -758,64 +671,6 @@ define({ "api": [
     "groupTitle": "Proyectos"
   },
   {
-    "type": "GET",
-    "url": "proyectos/id/:id",
-    "title": "Obtener proyecto a editar",
-    "name": "Editar_Proyecto",
-    "group": "Proyectos",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "id",
-            "description": "<p>id del proyecto a editar</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "200": [
-          {
-            "group": "200",
-            "type": "json",
-            "optional": false,
-            "field": "ProyectoAEditar",
-            "description": "<p>Devuelve los datos del proyecto a editar</p>"
-          }
-        ]
-      }
-    },
-    "error": {
-      "fields": {
-        "400": [
-          {
-            "group": "400",
-            "type": "json",
-            "optional": false,
-            "field": "ProyectoNoEncontrado",
-            "description": "<p>Error si no se encontró el proeycto en la base de datos</p>"
-          }
-        ],
-        "500": [
-          {
-            "group": "500",
-            "type": "json",
-            "optional": false,
-            "field": "ErrorAlBuscarProeycto",
-            "description": "<p>Error al momento de buscar el proyecto</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "routes/proyectos.js",
-    "groupTitle": "Proyectos"
-  },
-  {
     "type": "PUT",
     "url": "proyectos/editarProyecto/:id",
     "title": "Editar Proyecto",
@@ -864,6 +719,64 @@ define({ "api": [
             "type": "json",
             "optional": false,
             "field": "ErrorAlBuscarProyecto",
+            "description": "<p>Error al momento de buscar el proyecto</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "routes/proyectos.js",
+    "groupTitle": "Proyectos"
+  },
+  {
+    "type": "GET",
+    "url": "proyectos/id/:id",
+    "title": "Obtener proyecto a editar",
+    "name": "Editar_Proyecto",
+    "group": "Proyectos",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>id del proyecto a editar</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "json",
+            "optional": false,
+            "field": "ProyectoAEditar",
+            "description": "<p>Devuelve los datos del proyecto a editar</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "400": [
+          {
+            "group": "400",
+            "type": "json",
+            "optional": false,
+            "field": "ProyectoNoEncontrado",
+            "description": "<p>Error si no se encontró el proeycto en la base de datos</p>"
+          }
+        ],
+        "500": [
+          {
+            "group": "500",
+            "type": "json",
+            "optional": false,
+            "field": "ErrorAlBuscarProeycto",
             "description": "<p>Error al momento de buscar el proyecto</p>"
           }
         ]
