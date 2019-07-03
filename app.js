@@ -39,7 +39,7 @@ var tareasRoutes= require('./routes/tareas');
 //Conexión realizada a atlas
 //mongodb+srv://eduardoAtDinamycs:3v98ZOf7Xijl8bS1@clusterproyectos-da6ml.mongodb.net/DinamycsProyectos?retryWrites=true
 try {
-    mongoose.connect('mongodb+srv://eduardoAtDinamycs:3v98ZOf7Xijl8bS1@clusterproyectos-da6ml.mongodb.net/DinamycsProyectos?retryWrites=true',{useNewUrlParser: true}, (err, res) => {
+    mongoose.connect(process.env.MONGODB_URL,{useNewUrlParser: true}, (err, res) => {
         if(err) throw err;
         console.log('Base de datos online:\x1b[5m%s\x1b[0m',' online');
     });
