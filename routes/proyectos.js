@@ -177,8 +177,8 @@ app.put('/editarProyecto/:id' ,[mwAutenticacion.verificaToken],(req,res) =>{
     var arregloPart = [];
 
     
-    body.participantes.forEach(element => {
-                arregloPart.push(element._id);
+    body.participantes.forEach(participante => {
+                arregloPart.push(participante._id);
         });
             
     Proyecto.findById(id, (err, proyecto) =>{
@@ -330,7 +330,7 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
         var idProyecto = req.params.id;
    
         var body = req.body;
-        var archivoObj = JSON.parse(body.archivoObj);
+        var datosArchivo = JSON.parse(body.datosArchivo);
         var archivo = req.files.archivos;
       
         var nombreArchivo = archivo.name.split('.');
@@ -386,8 +386,8 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
      
         var archivoBd = new Archivo({
             nombre: nombreFile,
-            responsable:archivoObj.responsable,
-            comentario: archivoObj.comentario,
+            responsable:datosArchivo.responsable,
+            comentario: datosArchivo.comentario,
             archivoURL: `https://res.cloudinary.com/dinamycstest/raw/upload/fl_attachment/proyectos/${idProyecto}/${nombreFile}`
 
         });

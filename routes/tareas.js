@@ -33,8 +33,8 @@ app.post('/:id/crear' ,[mwAutenticacion.verificaToken], (req,res) =>{
     var body = req.body;
     var idProyecto = req.params.id;
     var participanteId;
-    body.participante.forEach(element => {
-         participanteId=element._id;
+    body.participante.forEach(participante => {
+         participanteId=participante._id;
     });
             console.log(body.nombreTarea);
             var generaTarea = new Tarea({
@@ -120,8 +120,8 @@ app.post('/:id/crear' ,[mwAutenticacion.verificaToken], (req,res) =>{
         var idProyecto =body.proyecto._id;
         var idTarea = req.params.idTarea;
         var idParticipante;
-        body.participante.forEach(part => {
-            idParticipante = part._id;         
+        body.participante.forEach(participante => {
+            idParticipante = participante._id;         
         });       
       
  
