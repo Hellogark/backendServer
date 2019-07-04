@@ -11,8 +11,7 @@ exports.subirCloud = async (id,nombreFile,archivo,tipo,formato,res) =>{
         public_id: nombreFile,
         use_filename:true,
         unique_filename:false,
-        folder: `${tipo}/${id}/`,
-        use_filename:true,
+        folder: `${tipo}/${id}/`,       
         resource_type: "auto",
         async:true,
         format:formato

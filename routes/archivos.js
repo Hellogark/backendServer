@@ -16,11 +16,8 @@ var mwAutenticacion = require('../middlewares/autenticacion');
  */
 app.get('/',( req, res, next ) => {
     /*Campos a  devolver como segundo parámetro*/ 
-    var desde = req.query.desde || 0;
-    desde = Number(desde);
     Archivos.find({} ).populate('usuarios', 'nombre correo')
-    .populate('proyecto')
-    .skip(desde).limit(3)
+    .populate('proyecto')   
         .exec(
         
         
