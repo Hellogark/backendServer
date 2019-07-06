@@ -24,7 +24,7 @@ exports.subirCloud = async (id,nombreFile,archivo,tipo,formato,res) =>{
         return res.status(400).json({
             ok:false,
             errors:{
-                message: 'Hubo un problema al subir la imagen al servidor'
+                message: 'Hubo un problema al subir el archivo servidor'
             }
         })
     }

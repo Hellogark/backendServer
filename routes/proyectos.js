@@ -330,7 +330,8 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
         var idProyecto = req.params.id;
    
         var body = req.body;
-        var datosArchivo = JSON.parse(body.datosArchivo);
+        var datosArchivo = body.datosArchivo;
+        console.log(datosArchivo)
         var archivo = req.files.archivos;
       
         var nombreArchivo = archivo.name.split('.');
@@ -370,8 +371,8 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
                 });
                 
             }
-        } })
-     subirArchivo.subirCloud(idProyecto,nombreFile,archivo,"proyectos",ext,res);   
+        }
+     subirArchivo.subirCloud(idProyecto,nombreFile,archivo,"proyectos",ext,res).then( res =>{})   
 
           Proyecto.findById(idProyecto, (err, proyecto) => {
             if (!proyecto) {
@@ -422,6 +423,7 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
         
         });
     });
+    })
 });
     
                                 
