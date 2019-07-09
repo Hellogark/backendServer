@@ -330,11 +330,10 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
         var idProyecto = req.params.id;
    
         var body = req.body;
-        var datosArchivo = body.datosArchivo;
-        console.log(datosArchivo)
-        var archivo = req.files.archivos;
-      
-        var nombreArchivo = archivo.name.split('.');
+        var datosArchivo = JSON.parse(body.datosArchivo);  
+       
+        var archivoSubir = req.files.archivos;   
+        var nombreArchivo = archivoSubir.name.split('.');
         var ext = nombreArchivo[nombreArchivo.length - 1];
         var extensionesProyecto = ['rar', 'zip'];
         if(extensionesProyecto.indexOf(ext.toLowerCase()) < 0) {
@@ -371,8 +370,25 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
                 });
                 
             }
-        }
-     subirArchivo.subirCloud(idProyecto,nombreFile,archivo,"proyectos",ext,res).then( res =>{})   
+        }     
+        
+     subirArchivo.subirCloud(idProyecto,nombreFile,archivoSubir,"proyectos",ext,res).catch((err)=>{
+        
+        return res.status(400).json({
+            ok:false,
+            errors:{
+                message: 'Hubo un problema al subir el archivo servidor 1'
+            }
+        })
+     })
+     if(res.headersSent){
+        return res.status(400).json({
+            ok:false,
+            errors:{
+                message: 'Hubo un problema al subir el archivo servidor'
+            }
+        })
+     }
 
           Proyecto.findById(idProyecto, (err, proyecto) => {
             if (!proyecto) {
@@ -383,8 +399,9 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
                    } 
 
                 });
-            }
-     
+            }        
+           
+            
         var archivoBd = new Archivo({
             nombre: nombreFile,
             responsable:datosArchivo.responsable,
@@ -392,10 +409,11 @@ app.delete('/:id' ,[mwAutenticacion.verificaToken], (req,res) =>{
             archivoURL: `https://res.cloudinary.com/dinamycstest/raw/upload/fl_attachment/proyectos/${idProyecto}/${nombreFile}`
 
         });
+        
 
         archivoBd.save((err, resp) => {
-            
              if (err) {
+               
                         return res.status(400).json({
                             ok: false,                         
                             errors: {
@@ -455,19 +473,19 @@ app.delete( '/:idProyecto/archivo/:id' ,[mwAutenticacion.verificaToken], async (
     var id = params.id;
     var idProyecto = params.idProyecto;
     var public_id = `proyectos/${idProyecto}/${body.archivo.nombre}`;
-    console.log(public_id);
+ 
     try {
         
         await cloudinary.uploader.destroy(public_id,  {invalidate: true, resource_type: "raw"}, function (err, res) {
                  if(err){
-                     console.log(err);
+               
                      return res.status(400).json({
                          ok:false,
                          mensaje: 'Hubo un problema al eliminar el archivo',
                          errors:err
                      })
                  }
-                 console.log(res);
+              
      
          })
     } catch (error) {

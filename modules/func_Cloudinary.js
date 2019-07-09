@@ -15,18 +15,19 @@ exports.subirCloud = async (id,nombreFile,archivo,tipo,formato,res) =>{
         resource_type: "auto",
         async:true,
         format:formato
-    };
-    try {
-        
+    };     
+        try {
+            
         const result = await cloudinary.uploader.upload_stream(opciones, res=>console.log(res)).end(archivo.data);
         return result;
+    
     } catch (error) {
         return res.status(400).json({
             ok:false,
             errors:{
-                message: 'Hubo un problema al subir el archivo servidor'
+                message: 'Hubo un problema al subir la imagen al servidor'
             }
         })
-    }
+    }     
 }
    
